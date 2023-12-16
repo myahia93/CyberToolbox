@@ -1,5 +1,5 @@
 import os
-from nmap_functions import get_user_ip_input, nmap_scan
+from .nmap_functions import get_user_ip_input, nmap_scan
 
 
 def nmap_scan(print_banner_function):
@@ -26,13 +26,13 @@ def nmap_menu(print_banner_function):
             option = int(input("Enter your option: "))
             if option == 1 or option == 2:
                 ip_or_network = get_user_ip_input()
-                nmap_scan(ip_or_network)
+                if ip_or_network:
+                    nmap_scan(ip_or_network)
             elif option == 0:
                 return  # Retourne au menu principal
             else:
                 os.system("clear")
-                print(
-                    "\033[91mInvalid option. Please enter a number between 0 and 2.\033[0m")
+                print("\033[91mInvalid option. Please enter 0, 1, or 2.\033[0m")
         except ValueError:
             os.system("clear")
             print("\033[91mInvalid input. Please enter a valid number.\033[0m")
