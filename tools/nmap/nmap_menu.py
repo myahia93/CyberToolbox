@@ -1,5 +1,5 @@
 import os
-from .nmap_functions import get_user_ip_input, nmap_scan, get_additional_options_menu
+from .nmap_functions import get_user_ip_input, nmap_scan, get_additional_options_menu, display_nmap_description
 
 
 def nmap_title(print_banner_function):
@@ -19,6 +19,7 @@ def nmap_menu(print_banner_function):
     while True:
         nmap_title(print_banner_function)
         print("\n[1]> Scan")
+        print("[2]> Display Nmap Description")
         print("[0]> Return to main menu")
 
         try:
@@ -28,11 +29,13 @@ def nmap_menu(print_banner_function):
                 if ip_or_network:
                     additional_options = get_additional_options_menu()
                     nmap_scan(ip_or_network, additional_options)
+            elif option == 2:
+                display_nmap_description()
             elif option == 0:
                 return  # Return to main menu
             else:
                 os.system("clear")
-                print("\033[91mInvalid option. Please enter 0 or 1.\033[0m")
+                print("\033[91mInvalid option. Please enter 0, 1, or 2.\033[0m")
         except ValueError:
             os.system("clear")
             print(

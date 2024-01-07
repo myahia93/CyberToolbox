@@ -69,6 +69,29 @@ def get_port_filtering_options():
         return ""
 
 
+def display_nmap_description():
+    nmap_description = """
+    Nmap (Network Mapper) is a powerful open-source tool for network exploration
+    and security auditing. It is designed to discover hosts and services on a
+    computer network, creating a "map" of the network. Nmap operates by sending
+    raw IP packets to hosts on the network and then analyzing their responses.
+
+    Key Features:
+    - Host discovery: Nmap can identify hosts on a network and discover their IP addresses.
+    - Port scanning: Nmap can scan for open ports on a host, helping identify running services.
+    - Version detection: Nmap can determine the version of services running on open ports.
+    - Operating System detection: Nmap can guess the operating system of a target host.
+    - Scriptable interaction: Nmap supports scripting for advanced tasks and automation.
+
+    Nmap is widely used by security professionals, system administrators, and network
+    engineers for tasks such as network inventory, vulnerability scanning, and network
+    monitoring. It provides a comprehensive set of features for both simple and complex
+    network scanning tasks.
+    """
+
+    print(nmap_description)
+
+
 # Final nmap scan
 def nmap_scan(ip_or_network, additional_options):
     nmap_command = f"nmap {additional_options} {ip_or_network}"
