@@ -25,12 +25,12 @@ def get_user_ip_input():
 def get_additional_options_menu():
     additional_options = ""
     while True:
-        print("\nChoose an option :")
+        print("\nChoose an option:")
         print("\n[1]> Port Filtering")
         print("[0]> No additional option (continue to scan)")
 
         try:
-            option = int(input("Enter your option: "))
+            option = int(input("\nEnter your option: "))
             if option == 1:
                 additional_options += get_port_filtering_options()
             elif option == 0:
@@ -45,18 +45,18 @@ def get_additional_options_menu():
 
 
 def get_port_filtering_options():
-    print("\nWhich port would you like to scan")
+    print("\nWhich port would you like to scan ?")
     print("\n[1]> Most common ports (HTTP, SSH, Telnet, DNS, FTP...)")
-    print("[2]> Specify port or port range (in format xx or xx-xx)")
+    print("[2]> Specify port or port range")
     print("[3]> Scan all ports")
     print("[0]> Return to previous menu")
 
     try:
-        option = int(input("Enter your option: "))
+        option = int(input("\nEnter your option: "))
         if option == 1:
             return "-F "
         elif option == 2:
-            return f"-p {input('Enter port or port range:')} "
+            return f"-p {input('Enter port or port range (in format xx or xx-xx):')} "
         elif option == 3:
             return "-p- "
         elif option == 0:
