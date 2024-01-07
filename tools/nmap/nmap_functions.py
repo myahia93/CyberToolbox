@@ -1,5 +1,6 @@
 import os
 import ipaddress
+import subprocess
 
 
 # User IP input (ip or network address)
@@ -111,6 +112,35 @@ def display_nmap_description():
 
 
 # Final nmap scan
+# def nmap_scan(ip_or_network, additional_options):
+#     nmap_command = f"nmap {additional_options} {ip_or_network}"
+#     os.system(nmap_command)
 def nmap_scan(ip_or_network, additional_options):
     nmap_command = f"nmap {additional_options} {ip_or_network}"
-    os.system(nmap_command)
+
+    try:
+        # Capture the output of the Nmap command
+        result = subprocess.run(
+            nmap_command.split(),
+            text=True,
+            capture_output=True,
+            check=True
+        )
+
+        # Print the formatted result
+        print_formatted_result(result.stdout)
+
+    except subprocess.CalledProcessError as e:
+        # Handle the case where the Nmap command returns an error
+        print("\033[91mError executing Nmap:\033[0m")
+        print(e.stderr)
+
+# Function to format and print the Nmap results
+
+
+def print_formatted_result(nmap_output):
+    # Process and format the Nmap output as needed
+    # For example, you can split the lines and print them in a structured way
+    lines = nmap_output.split('\n')
+    for line in lines:
+        print(line)
