@@ -2,7 +2,7 @@ import os
 from .nmap_functions import get_user_ip_input, nmap_scan
 
 
-def nmap_scan(print_banner_function):
+def nmap_title(print_banner_function):
     nmap_banner = """
     \033[93m.__   __. .___  ___.      ___      .______   
     |  \ |  | |   \/   |     /   \     |   _  \  
@@ -17,7 +17,7 @@ def nmap_scan(print_banner_function):
 
 def nmap_menu(print_banner_function):
     while True:
-        nmap_scan(print_banner_function)
+        nmap_title(print_banner_function)
         print("\n[1]> Scan a Network")
         print("[2]> Scan an IP Address")
         print("[0]> Return to main menu")
