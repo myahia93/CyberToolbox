@@ -26,16 +26,19 @@ def get_additional_options_menu(ip_or_network):
     additional_options = ""
     while True:
         print("\nChoose an option:")
-        print("\n[1]> Port Filtering")
-        print("[2]> Operating System Detection (SUDO REQUIRED)")
-        print("[3]> Service Version Detection")
-        print("[0]> No additional option (continue to scan)")
+        print("\n[\033[92m1\033[0m]> \033[96mPort Filtering\033[0m")
+        print(
+            "[\033[92m2\033[0m]> \033[96mOperating System Detection (SUDO REQUIRED)\033[0m")
+        print("[\033[92m3\033[0m]> \033[96mService Version Detection\033[0m")
+        print(
+            "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
 
-        print("\nConstruction of the Nmap command:")
-        print(f"nmap {ip_or_network} {additional_options}")
+        print("\033[93m", end='')  # Yellow color for Nmap command
+        print(f"nmap {ip_or_network} {additional_options}", end='')
+        print("\033[0m")  # Reset color to default
 
         try:
-            option = int(input("\nEnter your option: "))
+            option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 1:
                 additional_options += get_port_filtering_options()
             elif option == 2:
@@ -56,13 +59,13 @@ def get_additional_options_menu(ip_or_network):
 
 def get_port_filtering_options():
     print("\nWhich port would you like to scan ?")
-    print("\n[1]> Most common ports (HTTP, SSH, Telnet, DNS, FTP...)")
-    print("[2]> Specify port or port range")
-    print("[3]> Scan all ports")
-    print("[0]> Return to previous menu")
+    print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
+    print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
+    print("[\033[92m3\033[0m]> \033[96mScan all ports\033[0m")
+    print("[\033[92m0\033[0m]> \033[96mReturn to previous menu\033[0m")
 
     try:
-        option = int(input("\nEnter your option: "))
+        option = int(input("\n\033[92mEnter your option: \033[0m"))
         if option == 1:
             return "-F "
         elif option == 2:
@@ -82,6 +85,7 @@ def get_port_filtering_options():
 def display_nmap_description():
     nmap_description = """
     
+    \033[93m
     Nmap (Network Mapper) is a powerful open-source tool for network exploration
     and security auditing. It is designed to discover hosts and services on a
     computer network, creating a "map" of the network. Nmap operates by sending
@@ -98,7 +102,7 @@ def display_nmap_description():
     engineers for tasks such as network inventory, vulnerability scanning, and network
     monitoring. In SecuToolkit, the provided version of Nmap is simplified and made more
     user-friendly through a series of questions posed to the user. This approach allows
-    for precise and easy configuration of scans.
+    for precise and easy configuration of scans.\033[0m
 
     """
 
