@@ -120,40 +120,10 @@ def display_nmap_description():
 # def nmap_scan(ip_or_network, additional_options):
 #     nmap_command = f"nmap {additional_options} {ip_or_network}"
 #     os.system(nmap_command)
-
-
-# Global flag to control the loading animation
-loading_flag = True
-
-
-# Function to create a loading animation
-def loading_animation():
-    chars = "/-\|"
-    for char in itertools.cycle(chars):
-        if not loading_flag:
-            break
-        sys.stdout.write("\rLoading Nmap " + char)
-        sys.stdout.flush()
-        time.sleep(0.5)
-
-
-# Function to stop the loading animation
-def stop_loading_animation():
-    global loading_flag
-    loading_flag = False
-    sys.stdout.write('\r')
-    sys.stdout.flush()
-
-
 def nmap_scan(ip_or_network, additional_options):
-    global loading_flag
     nmap_command = f"nmap {additional_options} {ip_or_network}"
 
     try:
-        # Start loading animation in a separate thread
-        loading_process = Process(target=loading_animation)
-        loading_process.start()
-
         # Capture the output of the original Nmap command
         original_output = subprocess.run(
             nmap_command.split(),
@@ -161,10 +131,6 @@ def nmap_scan(ip_or_network, additional_options):
             capture_output=True,
             check=True
         ).stdout
-
-        # Wait for the loading animation process to finish
-        stop_loading_animation()
-        loading_process.join()
 
         # Print the original Nmap output
         print("\n\033[94mOriginal Nmap Output:\033[0m")
@@ -178,15 +144,13 @@ def nmap_scan(ip_or_network, additional_options):
         print_formatted_result(formatted_result)
 
     except subprocess.CalledProcessError as e:
-        # Stop loading animation in case of an error
-        stop_loading_animation()
-
         # Handle the case where the Nmap command returns an error
         print("\033[91mError executing Nmap:\033[0m")
         print(e.stderr)
 
-
 # Function to process the Nmap output and return formatted results
+
+
 def process_nmap_output(nmap_output):
     formatted_result = []
 
@@ -211,8 +175,9 @@ def process_nmap_output(nmap_output):
 
     return formatted_result
 
-
 # Function to format and print the Nmap results
+
+
 def print_formatted_result(formatted_result):
     # Create a PrettyTable with the formatted result
     table = PrettyTable()
