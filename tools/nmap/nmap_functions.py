@@ -5,6 +5,7 @@ from prettytable import PrettyTable
 import itertools
 import sys
 import time
+from multiprocessing import Process
 
 
 # User IP input (ip or network address)
@@ -121,27 +122,37 @@ def display_nmap_description():
 #     os.system(nmap_command)
 
 
+# Global flag to control the loading animation
+loading_flag = True
+
+
 # Function to create a loading animation
 def loading_animation():
     chars = "/-\|"
     for char in itertools.cycle(chars):
+        if not loading_flag:
+            break
         sys.stdout.write("\rLoading Nmap " + char)
         sys.stdout.flush()
-        time.sleep(0.1)
+        time.sleep(0.5)
 
 
 # Function to stop the loading animation
 def stop_loading_animation():
+    global loading_flag
+    loading_flag = False
     sys.stdout.write('\r')
     sys.stdout.flush()
 
 
 def nmap_scan(ip_or_network, additional_options):
+    global loading_flag
     nmap_command = f"nmap {additional_options} {ip_or_network}"
 
     try:
-        # Start loading animation
-        loading_animation()
+        # Start loading animation in a separate thread
+        loading_process = Process(target=loading_animation)
+        loading_process.start()
 
         # Capture the output of the original Nmap command
         original_output = subprocess.run(
@@ -151,8 +162,9 @@ def nmap_scan(ip_or_network, additional_options):
             check=True
         ).stdout
 
-        # Stop loading animation
+        # Wait for the loading animation process to finish
         stop_loading_animation()
+        loading_process.join()
 
         # Print the original Nmap output
         print("\n\033[94mOriginal Nmap Output:\033[0m")
