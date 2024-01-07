@@ -22,14 +22,17 @@ def get_user_ip_input():
 
 # Nmap Options :
 
-def get_additional_options_menu():
+def get_additional_options_menu(ip_or_network):
     additional_options = ""
     while True:
         print("\nChoose an option:")
         print("\n[1]> Port Filtering")
-        print("[2]> Operating System Detection")
+        print("[2]> Operating System Detection (SUDO REQUIRED)")
         print("[3]> Service Version Detection")
         print("[0]> No additional option (continue to scan)")
+
+        print("\nConstruction of the Nmap command:")
+        print(f"nmap {ip_or_network} {additional_options}")
 
         try:
             option = int(input("\nEnter your option: "))
@@ -78,6 +81,7 @@ def get_port_filtering_options():
 
 def display_nmap_description():
     nmap_description = """
+    
     Nmap (Network Mapper) is a powerful open-source tool for network exploration
     and security auditing. It is designed to discover hosts and services on a
     computer network, creating a "map" of the network. Nmap operates by sending

@@ -23,11 +23,12 @@ def nmap_menu(print_banner_function):
         print("[0]> Return to main menu")
 
         try:
-            option = int(input("Enter your option: "))
+            option = int(input("\nEnter your option: "))
             if option == 1:
                 ip_or_network = get_user_ip_input()
                 if ip_or_network:
-                    additional_options = get_additional_options_menu()
+                    additional_options = get_additional_options_menu(
+                        ip_or_network)
                     nmap_scan(ip_or_network, additional_options)
             elif option == 2:
                 display_nmap_description()
