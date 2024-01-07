@@ -27,16 +27,23 @@ def get_additional_options_menu():
     while True:
         print("\nChoose an option:")
         print("\n[1]> Port Filtering")
+        print("[2]> Operating System Detection")
+        print("[3]> Service Version Detection")
         print("[0]> No additional option (continue to scan)")
 
         try:
             option = int(input("\nEnter your option: "))
             if option == 1:
                 additional_options += get_port_filtering_options()
+            elif option == 2:
+                additional_options += "-O "
+            elif option == 3:
+                additional_options += "-sV "
             elif option == 0:
                 break
             else:
-                print("\033[91mInvalid option. Please enter 0 or 1.\033[0m")
+                print(
+                    "\033[91mInvalid option. Please enter 0, 1, 2, or 3.\033[0m")
         except ValueError:
             print(
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
@@ -85,8 +92,10 @@ def display_nmap_description():
 
     Nmap is widely used by security professionals, system administrators, and network
     engineers for tasks such as network inventory, vulnerability scanning, and network
-    monitoring. It provides a comprehensive set of features for both simple and complex
-    network scanning tasks.
+    monitoring. In SecuToolkit, the provided version of Nmap is simplified and made more
+    user-friendly through a series of questions posed to the user. This approach allows
+    for precise and easy configuration of scans.
+
     """
 
     print(nmap_description)

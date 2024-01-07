@@ -19,7 +19,7 @@ def nmap_menu(print_banner_function):
     while True:
         nmap_title(print_banner_function)
         print("\n[1]> Scan")
-        print("[2]> Display Nmap Description")
+        print("[2]> Nmap Description")
         print("[0]> Return to main menu")
 
         try:
