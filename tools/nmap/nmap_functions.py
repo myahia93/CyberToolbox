@@ -19,19 +19,20 @@ def get_user_ip_input():
                 "\033[91mInvalid input. Please enter a valid IP address or network address.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt
 
+
 # Nmap Options :
 
-
-def get_additional_options_menu():
+def get_additional_options_menu(option_used=""):
     additional_options = ""
     while True:
-        print("\n[1]> Port Filtering")
+        print("\n[1]> Port Filtering" +
+              (f" ({option_used})" if option_used else ""))
         print("[0]> No additional option (continue to scan)")
 
         try:
             option = int(input("Enter your option: "))
             if option == 1:
-                additional_options += get_port_filtering_options()
+                additional_options += get_port_filtering_options(option_used)
             elif option == 0:
                 break
             else:
@@ -43,7 +44,7 @@ def get_additional_options_menu():
     return additional_options
 
 
-def get_port_filtering_options():
+def get_port_filtering_options(option_used=""):
     print("\n[1]> Most common ports (-F)")
     print("[2]> Specify port or port range (-p)")
     print("[3]> Scan all ports (-p-)")
@@ -51,11 +52,11 @@ def get_port_filtering_options():
 
     try:
         option = int(input("Enter your option: "))
-        if option == 1:
+        if option == 1 and "Most common ports (-F)" not in option_used:
             return "-F "
-        elif option == 2:
+        elif option == 2 and "Specify port or port range (-p)" not in option_used:
             return f"-p {input('Enter port or port range:')} "
-        elif option == 3:
+        elif option == 3 and "Scan all ports (-p-)" not in option_used:
             return "-p- "
         elif option == 0:
             return ""
