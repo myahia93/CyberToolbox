@@ -59,7 +59,6 @@ def get_additional_options_menu(ip_or_network):
 
 
 def get_port_filtering_options():
-    question = ""
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
     print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
@@ -71,8 +70,7 @@ def get_port_filtering_options():
         if option == 1:
             return "-F "
         elif option == 2:
-            question == "\033[92mEnter port or port range (in format xx or xx-xx):\033[0m"
-            return f"-p {input(question)} "
+            return f"-p {input('Enter port or port range (in format xx or xx-xx):')} "
         elif option == 3:
             return "-p- "
         elif option == 0:
@@ -103,7 +101,7 @@ def display_nmap_description():
 
     Nmap is widely used by security professionals, system administrators, and network
     engineers for tasks such as network inventory, vulnerability scanning, and network
-    monitoring. In SecuToolkit, the provided version of Nmap is simplified and made more
+    monitoring. In \033[96mSecuToolkit\033[93m, the provided version of Nmap is simplified and made more
     user-friendly through a series of questions posed to the user. This approach allows
     for precise and easy configuration of scans.\033[0m
 
