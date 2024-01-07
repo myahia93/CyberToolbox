@@ -41,13 +41,23 @@ def get_additional_options_menu(option_used=""):
             print(
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
+
+    if additional_options:
+        print("\nWould you like to choose another option? (y/n)")
+        user_choice = input("Your choice: ").lower()
+        if user_choice != 'y':
+            return additional_options  # Exit if the user does not want to choose another option
     return additional_options
 
 
 def get_port_filtering_options(option_used=""):
-    print("\n[1]> Most common ports (-F)")
-    print("[2]> Specify port or port range (-p)")
-    print("[3]> Scan all ports (-p-)")
+    os.system("clear")
+    print("\n[1]> Most common ports (-F)" +
+          (f" {option_used}" if "Most common ports (-F)" in option_used else ""))
+    print("[2]> Specify port or port range (-p)" +
+          (f" {option_used}" if "Specify port or port range (-p)" in option_used else ""))
+    print("[3]> Scan all ports (-p-)" +
+          (f" {option_used}" if "Scan all ports (-p-)" in option_used else ""))
     print("[0]> Return to previous menu")
 
     try:
