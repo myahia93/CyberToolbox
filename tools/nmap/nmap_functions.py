@@ -15,9 +15,8 @@ def get_user_ip_input():
                 ipaddress.IPv4Address(user_input)
             return user_input
         except (ipaddress.AddressValueError, ipaddress.NetmaskValueError):
-            os.system("clear")
             print(
-                "\033[91mInvalid input. Please enter a valid IP address or network address.\033[0m")
+                "\033[91mInvalid input. Please enter a valid IP address or network address.\033[0m", end='')
 
 
 # Final nmap scan
