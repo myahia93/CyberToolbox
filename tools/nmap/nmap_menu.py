@@ -19,8 +19,8 @@ def nmap_menu(print_banner_function):
     while True:
         nmap_title(print_banner_function)
         print("\n[\033[92m1\033[0m]> \033[96mScan\033[0m")
-        print("[\033[92m2\033[0m]> Nmap Description\033[0m")
-        print("[\033[92m0\033[0m]> Return to main menu\033[0m")
+        print("[\033[92m2\033[0m]> \033[96mNmap Description\033[0m")
+        print("[\033[92m0\033[0m]> \033[96mReturn to main menu\033[0m")
 
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))

@@ -6,7 +6,7 @@ import ipaddress
 def get_user_ip_input():
     while True:
         user_input = input(
-            "Enter the IP address or network (in format x.x.x.x or x.x.x.x/x): ")
+            "\033[92mEnter the IP address or network (in format x.x.x.x or x.x.x.x/x): \033[0m")
         try:
             if '/' in user_input:
                 ipaddress.IPv4Network(user_input)  # Try to parse as a network
@@ -33,6 +33,7 @@ def get_additional_options_menu(ip_or_network):
         print(
             "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
 
+        print("\nConstruction of the Nmap command:")
         print("\033[93m", end='')  # Yellow color for Nmap command
         print(f"nmap {ip_or_network} {additional_options}", end='')
         print("\033[0m")  # Reset color to default
@@ -58,6 +59,7 @@ def get_additional_options_menu(ip_or_network):
 
 
 def get_port_filtering_options():
+    question = ""
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
     print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
@@ -69,7 +71,8 @@ def get_port_filtering_options():
         if option == 1:
             return "-F "
         elif option == 2:
-            return f"-p {input('Enter port or port range (in format xx or xx-xx):')} "
+            question == "\033[92mEnter port or port range (in format xx or xx-xx):\033[0m"
+            return f"-p {input(question)} "
         elif option == 3:
             return "-p- "
         elif option == 0:
