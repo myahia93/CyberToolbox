@@ -121,6 +121,7 @@ def display_nmap_description():
 #     nmap_command = f"nmap {additional_options} {ip_or_network}"
 #     os.system(nmap_command)
 def nmap_scan(ip_or_network, additional_options):
+    print("\n\033[93mLoading Nmap...\033[0m")
     nmap_command = f"nmap {additional_options} {ip_or_network}"
 
     try:
