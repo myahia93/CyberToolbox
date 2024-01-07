@@ -44,7 +44,8 @@ def get_additional_options_menu():
     return additional_options
 
 
-def get_port_filtering_options(option_used=""):
+def get_port_filtering_options():
+    print("\nWhich port would you like to scan")
     print("\n[1]> Most common ports (HTTP, SSH, Telnet, DNS, FTP...)")
     print("[2]> Specify port or port range (in format xx or xx-xx)")
     print("[3]> Scan all ports")
