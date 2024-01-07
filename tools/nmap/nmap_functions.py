@@ -17,6 +17,7 @@ def get_user_ip_input():
         except (ipaddress.AddressValueError, ipaddress.NetmaskValueError):
             print(
                 "\033[91mInvalid input. Please enter a valid IP address or network address.\033[0m", end='')
+            print()  # Adds a line to separate the error message from the prompt
 
 
 # Final nmap scan
