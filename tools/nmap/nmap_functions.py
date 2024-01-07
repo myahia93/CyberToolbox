@@ -1,9 +1,11 @@
 import os
 import ipaddress
 import subprocess
-
+from prettytable import PrettyTable
 
 # User IP input (ip or network address)
+
+
 def get_user_ip_input():
     while True:
         user_input = input(
@@ -139,8 +141,21 @@ def nmap_scan(ip_or_network, additional_options):
 
 
 def print_formatted_result(nmap_output):
-    # Process and format the Nmap output as needed
-    # For example, you can split the lines and print them in a structured way
+    # Process and format the Nmap output using prettytable
+    table = PrettyTable()
+    table.field_names = ["Host", "Service", "Port", "State"]
+
     lines = nmap_output.split('\n')
     for line in lines:
-        print(line)
+        if line.startswith("Nmap scan report"):
+            host = line.split()[-1]
+        elif "/tcp" in line and "open" in line:
+            fields = line.split()
+            service = fields[2]
+            port = fields[0].split('/')[0]
+            state = fields[1]
+            table.add_row([host, service, port, state])
+
+    # Set column alignment and print the table
+    table.align = "l"
+    print(table)
