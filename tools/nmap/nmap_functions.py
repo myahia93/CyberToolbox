@@ -121,26 +121,36 @@ def nmap_scan(ip_or_network, additional_options):
     nmap_command = f"nmap {additional_options} {ip_or_network}"
 
     try:
-        # Capture the output of the Nmap command
-        result = subprocess.run(
+        # Capture the output of the original Nmap command
+        original_output = subprocess.run(
             nmap_command.split(),
             text=True,
             capture_output=True,
             check=True
-        )
+        ).stdout
+
+        # Print the original Nmap output
+        print("\033[94mOriginal Nmap Output:\033[0m")
+        print(original_output)
+
+        # Process and format the Nmap output using prettytable
+        formatted_result = process_nmap_output(original_output)
 
         # Print the formatted result
-        print_formatted_result(result.stdout)
+        print("\n\033[94mSummary:\033[0m")
+        print_formatted_result(formatted_result)
 
     except subprocess.CalledProcessError as e:
         # Handle the case where the Nmap command returns an error
         print("\033[91mError executing Nmap:\033[0m")
         print(e.stderr)
 
-# Function to format and print the Nmap results
+# Function to process the Nmap output and return formatted results
 
 
-def print_formatted_result(nmap_output):
+def process_nmap_output(nmap_output):
+    formatted_result = []
+
     # Process and format the Nmap output using prettytable
     table = PrettyTable()
     table.field_names = ["Host", "Service", "Port", "State"]
@@ -155,6 +165,23 @@ def print_formatted_result(nmap_output):
             port = fields[0].split('/')[0]
             state = fields[1]
             table.add_row([host, service, port, state])
+            formatted_result.append([host, service, port, state])
+
+    # Set column alignment
+    table.align = "l"
+
+    return formatted_result
+
+# Function to format and print the Nmap results
+
+
+def print_formatted_result(formatted_result):
+    # Create a PrettyTable with the formatted result
+    table = PrettyTable()
+    table.field_names = ["Host", "Service", "Port", "State"]
+
+    for entry in formatted_result:
+        table.add_row(entry)
 
     # Set column alignment and print the table
     table.align = "l"
