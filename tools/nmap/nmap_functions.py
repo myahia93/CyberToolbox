@@ -1,11 +1,6 @@
-import os
 import ipaddress
 import subprocess
 from prettytable import PrettyTable
-import itertools
-import sys
-import time
-from multiprocessing import Process
 
 
 # User IP input (ip or network address)
@@ -27,15 +22,15 @@ def get_user_ip_input():
 
 
 # Nmap Options :
-
 def get_additional_options_menu(ip_or_network):
     additional_options = ""
     while True:
         print("\nChoose an option:")
         print("\n[\033[92m1\033[0m]> \033[96mPort Filtering\033[0m")
         print(
-            "[\033[92m2\033[0m]> \033[96mOperating System Detection (SUDO REQUIRED)\033[0m")
+            "[\033[92m2\033[0m]> \033[96mOperating System Detection (\033[91mSUDO REQUIRED\033[96m)\033[0m")
         print("[\033[92m3\033[0m]> \033[96mService Version Detection\033[0m")
+        print("[\033[92m4\033[0m]> \033[96mCustom Nmap Option (For Nmap Expert)\033[0m")
         print(
             "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
 
@@ -52,6 +47,9 @@ def get_additional_options_menu(ip_or_network):
                 additional_options += "-O "
             elif option == 3:
                 additional_options += "-sV "
+            elif option == 4:
+                additional_options += input(
+                    "\n\033[92mEnter your custom Nmap option: \033[0m") + " "
             elif option == 0:
                 break
             else:
@@ -117,9 +115,6 @@ def display_nmap_description():
 
 
 # Final nmap scan
-# def nmap_scan(ip_or_network, additional_options):
-#     nmap_command = f"nmap {additional_options} {ip_or_network}"
-#     os.system(nmap_command)
 def nmap_scan(ip_or_network, additional_options):
     print("\n\033[93mLoading Nmap...\033[0m")
     nmap_command = f"nmap {additional_options} {ip_or_network}"
@@ -149,9 +144,8 @@ def nmap_scan(ip_or_network, additional_options):
         print("\033[91mError executing Nmap:\033[0m")
         print(e.stderr)
 
+
 # Function to process the Nmap output and return formatted results
-
-
 def process_nmap_output(nmap_output):
     formatted_result = []
 
@@ -176,9 +170,8 @@ def process_nmap_output(nmap_output):
 
     return formatted_result
 
+
 # Function to format and print the Nmap results
-
-
 def print_formatted_result(formatted_result):
     # Create a PrettyTable with the formatted result
     table = PrettyTable()
