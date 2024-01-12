@@ -21,7 +21,7 @@ def check_url_validity():
                 return url
             else:
                 print(
-                    "\033[91mError: The provided URL does not have a form for input.\033[0m")
+                    "\033[91mThe provided URL does not have a form for input.\nPlease enter an URL that contain a form for input\033[0m")
 
         except requests.RequestException:
             print(
@@ -30,35 +30,37 @@ def check_url_validity():
 
 
 def perform_sqlmap_check(url):
-    try:
-        # Launch SQLmap using the URL provided
-        sqlmap_command = f"sqlmap -u {url} --batch"
-        result = subprocess.run(
-            sqlmap_command.split(),
-            text=True,
-            capture_output=True,
-            check=True
-        )
+    sqlmap_command = f"sqlmap -u {url} --dbs"
+    sqlmap_command
+    # try:
+    #     # Launch SQLmap using the URL provided
+    #     sqlmap_command = f"sqlmap -u {url} --batch"
+    #     result = subprocess.run(
+    #         sqlmap_command.split(),
+    #         text=True,
+    #         capture_output=True,
+    #         check=True
+    #     )
 
-        # Check if access to the database is vulnerable
-        if "is vulnerable" in result.stdout.lower():
-            # Display databases if vulnerable
-            print("\n\033[94mDatabase Vulnerable - Listing Databases:\033[0m")
-            sqlmap_command = f"sqlmap -u {url} --dbs --batch"
-            result = subprocess.run(
-                sqlmap_command.split(),
-                text=True,
-                capture_output=True,
-                check=True
-            )
-            print(result.stdout)
-        else:
-            print("\n\033[91mDatabase Access Not Vulnerable.\033[0m")
+    #     # Check if access to the database is vulnerable
+    #     if "is vulnerable" in result.stdout.lower():
+    #         # Display databases if vulnerable
+    #         print("\n\033[94mDatabase Vulnerable - Listing Databases:\033[0m")
+    #         sqlmap_command = f"sqlmap -u {url} --dbs --batch"
+    #         result = subprocess.run(
+    #             sqlmap_command.split(),
+    #             text=True,
+    #             capture_output=True,
+    #             check=True
+    #         )
+    #         print(result.stdout)
+    #     else:
+    #         print("\n\033[91mDatabase Access Not Vulnerable.\033[0m")
 
-    except subprocess.CalledProcessError as e:
-        print("\033[91mError executing SQLmap:\033[0m", end='')
-        print()
-        print(e.stderr)
+    # except subprocess.CalledProcessError as e:
+    #     print("\033[91mError executing SQLmap:\033[0m", end='')
+    #     print()
+    #     print(e.stderr)
 
 
 def display_sqlmap_description():
