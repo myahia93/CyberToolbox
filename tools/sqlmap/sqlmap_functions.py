@@ -40,10 +40,15 @@ def perform_sqlmap_check(url):
         capture_output=True
     ).stdout
 
+    # Print the original SQLmap output
+    print("\n\033[94mOriginal SQLmap Output:\033[0m")
+    print(sqlmap_output)
+
     # Process and format the SQLmap output
     formatted_result = process_sqlmap_output(sqlmap_output)
 
     # Print the formatted result
+    print("\n\033[94mSummary:\033[0m")
     print_formatted_result(formatted_result)
 
 
