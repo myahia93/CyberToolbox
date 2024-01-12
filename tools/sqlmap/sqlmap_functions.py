@@ -1,3 +1,4 @@
+import os
 import requests
 import subprocess
 from bs4 import BeautifulSoup
@@ -31,7 +32,7 @@ def check_url_validity():
 
 def perform_sqlmap_check(url):
     sqlmap_command = f"sqlmap -u {url} --dbs"
-    sqlmap_command
+    os.system(sqlmap_command)
     # try:
     #     # Launch SQLmap using the URL provided
     #     sqlmap_command = f"sqlmap -u {url} --batch"
