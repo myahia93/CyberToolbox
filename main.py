@@ -29,7 +29,7 @@ def main():
         print("\n[\033[92m1\033[0m]> \033[96mNmap\033[0m")
         print("[\033[92m2\033[0m]> \033[96mSQLmap\033[0m")
         print("[\033[92m3\033[0m]> \033[96mHydra (Bruteforce)\033[0m")
-        print("[\033[92m0\033[0m]> \033[96mExit the program\033[0m")
+        print("[\033[91m0\033[0m]> \033[96mExit the program\033[0m")
 
         try:
             option = int(input("Enter your option: "))
@@ -40,7 +40,7 @@ def main():
             elif option == 3:
                 hydra_menu(print_banner)
             elif option == 0:
-                print("\033[91mExiting the program. Goodbye!\033[m")
+                print("\033[92mExiting the program. Goodbye!\033[m")
                 sys.exit()
             else:
                 os.system("clear")
