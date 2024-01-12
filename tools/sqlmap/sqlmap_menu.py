@@ -4,20 +4,31 @@ from .sqlmap_functions import display_sqlmap_description, check_url_validity, pe
 
 def sqlmap_title(print_banner_function):
     sqlmap_banner = """
-    \033[93m.__   __. .___  ___.      ___      .______   
-    |  \ |  | |   \/   |     /   \     |   _  \  
-    |   \|  | |  \  /  |    /  ^  \    |  |_)  | 
-    |  . `  | |  |\/|  |   /  /_\  \   |   ___/  
-    |  |\   | |  |  |  |  /  _____  \  |  |      
-    |__| \__| |__|  |__| /__/     \__\ | _|\033[0m   
-    """
-
+    \033[0;34m
+  █████████            ████     ██████   ██████                    
+ ███░░░░░███          ░░███    ░░██████ ██████                     
+░███    ░░░   ████████ ░███     ░███░█████░███   ██████   ████████ 
+░░█████████  ███░░███  ░███     ░███░░███ ░███  ░░░░░███ ░░███░░███
+ ░░░░░░░░███░███ ░███  ░███     ░███ ░░░  ░███   ███████  ░███ ░███
+ ███    ░███░███ ░███  ░███     ░███      ░███  ███░░███  ░███ ░███
+░░█████████ ░░███████  █████    █████     █████░░████████ ░███████ 
+ ░░░░░░░░░   ░░░░░███ ░░░░░    ░░░░░     ░░░░░  ░░░░░░░░  ░███░░░  
+                 ░███                                     ░███     
+                 █████                                    █████    
+                ░░░░░                                    ░░░░░     \033[0m
+ """
     print(sqlmap_banner)
 
 
 def sqlmap_menu(print_banner_function):
+    # Variable for controling the banner print
+    show_banner = True
+
     while True:
-        sqlmap_title(print_banner_function)
+        if show_banner:
+            sqlmap_menu(print_banner_function)
+        else:
+            show_banner = True
         print("\n[\033[92m1\033[0m]> \033[96mDatabase Vulnerability Check\033[0m")
         print("[\033[92m2\033[0m]> \033[96mSQLmap Description\033[0m")
         print("[\033[92m0\033[0m]> \033[96mReturn to main menu\033[0m")
@@ -33,7 +44,9 @@ def sqlmap_menu(print_banner_function):
                         "\n\033[91mInvalid URL. Please enter a valid URL.\033[0m")
             elif option == 2:
                 display_sqlmap_description()
+                show_banner = False
             elif option == 0:
+                os.system("clear")
                 return  # Return to main menu
             else:
                 os.system("clear")

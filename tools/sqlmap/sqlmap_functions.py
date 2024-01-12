@@ -143,7 +143,7 @@ def display_sqlmap_description():
 
     SQLmap is a powerful tool used by security professionals and penetration testers to identify and exploit
     SQL injection vulnerabilities, which can be a serious threat to the security of web applications. 
-    In \033[96mCyberToolbox\033[93m, the provided version of SQLmap is simplified and made more
+    In \033[0;31mCyberToolbox\033[93m, the provided version of SQLmap is simplified and made more
     user-friendly through a series of questions posed to the user. This approach allows
     for precise and easy configuration of scans.
 

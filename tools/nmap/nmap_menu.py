@@ -4,20 +4,32 @@ from .nmap_functions import get_user_ip_input, nmap_scan, get_additional_options
 
 def nmap_title(print_banner_function):
     nmap_banner = """
-    \033[93m.__   __. .___  ___.      ___      .______   
-    |  \ |  | |   \/   |     /   \     |   _  \  
-    |   \|  | |  \  /  |    /  ^  \    |  |_)  | 
-    |  . `  | |  |\/|  |   /  /_\  \   |   ___/  
-    |  |\   | |  |  |  |  /  _____  \  |  |      
-    |__| \__| |__|  |__| /__/     \__\ | _|\033[0m   
+    \033[0;33m
+ ██████   █████                                    
+░░██████ ░░███                                     
+ ░███░███ ░███  █████████████    ██████   ████████ 
+ ░███░░███░███ ░░███░░███░░███  ░░░░░███ ░░███░░███
+ ░███ ░░██████  ░███ ░███ ░███   ███████  ░███ ░███
+ ░███  ░░█████  ░███ ░███ ░███  ███░░███  ░███ ░███
+ █████  ░░█████ █████░███ █████░░████████ ░███████ 
+░░░░░    ░░░░░ ░░░░░ ░░░ ░░░░░  ░░░░░░░░  ░███░░░  
+                                          ░███     
+                                          █████    
+                                         ░░░░░     
+    \033[0m   
     """
-
     print(nmap_banner)
 
 
 def nmap_menu(print_banner_function):
+    # Variable for controling the banner print
+    show_banner = True
+
     while True:
-        nmap_title(print_banner_function)
+        if show_banner:
+            nmap_title(print_banner_function)
+        else:
+            show_banner = True
         print("\n[\033[92m1\033[0m]> \033[96mScan\033[0m")
         print("[\033[92m2\033[0m]> \033[96mNmap Description\033[0m")
         print("[\033[92m0\033[0m]> \033[96mReturn to main menu\033[0m")
@@ -32,7 +44,9 @@ def nmap_menu(print_banner_function):
                     nmap_scan(ip_or_network, additional_options)
             elif option == 2:
                 display_nmap_description()
+                show_banner = False
             elif option == 0:
+                os.system("clear")
                 return  # Return to main menu
             else:
                 os.system("clear")

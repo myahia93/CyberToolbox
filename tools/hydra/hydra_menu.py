@@ -40,7 +40,7 @@ def hydra_menu(print_banner_function):
                 show_banner = False  # Empêche l'affichage de la bannière après avoir montré la description
             elif option == 0:
                 os.system("clear")
-                return  # Retour au menu principal
+                return  # Return to main menu
             else:
                 os.system("clear")
                 print("\033[91mInvalid option. Please enter 0, 1, or 2.\033[0m")
