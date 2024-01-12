@@ -60,7 +60,7 @@ def process_sqlmap_output(sqlmap_output):
 
     # Check if SQLmap detected injection points
     if "sqlmap resumed the following injection point(s)" in sqlmap_output:
-        formatted_result['Vulnerabilities'] = ["Vulnerable"]
+        formatted_result['Vulnerabilities'] = ["\033[91mVulnerable\033[0m"]
         formatted_result['Injection Types'] = []
 
         # Extract injection types
