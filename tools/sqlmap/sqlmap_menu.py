@@ -25,9 +25,8 @@ def sqlmap_menu(print_banner_function):
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 1:
-                # Ask the user to enter an URL
-                url = input("\n\033[92mEnter the URL to check: \033[0m")
-                if check_url_validity(url):
+                url = check_url_validity()
+                if url:
                     perform_sqlmap_check(url)
                 else:
                     print(

@@ -3,27 +3,31 @@ import subprocess
 from bs4 import BeautifulSoup
 
 
-def check_url_validity(url):
-    try:
-        # Verify that the URL is accessible
-        response = requests.get(url)
-        response.raise_for_status()
+def check_url_validity():
+    while True:
+        # Ask the user to enter an URL
+        url = input(
+            "\n\033[92mEnter the URL to check: \033[0m")
+        try:
+            # Verify that the URL is accessible
+            response = requests.get(url)
+            response.raise_for_status()
 
-        # Check whether the site uses a form for entering URLs
-        soup = BeautifulSoup(response.content, 'html.parser')
-        form = soup.find('form')
+            # Check whether the site uses a form for entering URLs
+            soup = BeautifulSoup(response.content, 'html.parser')
+            form = soup.find('form')
 
-        if form:
-            return True
-        else:
+            if form:
+                return url
+            else:
+                print(
+                    "\033[91mError: The provided URL does not have a form for input.\033[0m")
+
+        except requests.RequestException:
             print(
-                "\033[91mError: The provided URL does not have a form for input.\033[0m")
+                "\033[91mInvalid URL. Please enter a valid URL.\033[0m", end='')
+            print()
             return False
-
-    except requests.RequestException as e:
-        print(f"\033[91mError validating URL: {e}\033[0m", end='')
-        print()
-        return False
 
 
 def perform_sqlmap_check(url):
