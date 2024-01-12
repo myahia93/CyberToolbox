@@ -77,10 +77,10 @@ def process_sqlmap_output(sqlmap_output):
     db_start_index = sqlmap_output.find("available databases")
     if db_start_index != -1:
         # Extract database names
-        db_lines = lines[lines.index("available databases [2]:") + 1: lines.index(
-            "[09:10:01] [INFO] fetched data logged to text files under '/home/osboxes/.local/share/sqlmap/output/testphp.vulnweb.com'")]
-        formatted_result['Databases'] = [line.strip(
-            "*").strip() for line in db_lines if line.startswith("[*]")]
+        db_lines = sqlmap_output[db_start_index:].split(
+            '\n')[2:-4]  # Exclude unnecessary lines
+        formatted_result['Databases'] = [line.split(']')[1].strip(
+        ) if ']' in line else line.strip() for line in db_lines]
 
     for line in lines:
         if "the back-end DBMS is" in line:
