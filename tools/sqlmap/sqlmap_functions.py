@@ -27,7 +27,6 @@ def check_url_validity():
             print(
                 "\033[91mInvalid URL. Please enter a valid URL.\033[0m", end='')
             print()
-            return False
 
 
 def perform_sqlmap_check(url):
