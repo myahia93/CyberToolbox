@@ -32,7 +32,7 @@ def main():
         print("[\033[91m0\033[0m]> \033[91mExit the program\033[0m")
 
         try:
-            option = int(input("\nEnter your option: "))
+            option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 1:
                 nmap_menu(print_banner)
             elif option == 2:
