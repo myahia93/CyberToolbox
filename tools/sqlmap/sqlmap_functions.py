@@ -58,13 +58,30 @@ def process_sqlmap_output(sqlmap_output):
     # Split SQLmap output into lines
     lines = sqlmap_output.split('\n')
 
-    # Check if SQLmap detected vulnerabilities
-    if "is potentially vulnerable" in sqlmap_output:
-        formatted_result['Vulnerabilities'] = ["Potentially Vulnerable"]
+    # Check if SQLmap detected injection points
+    if "sqlmap resumed the following injection point(s)" in sqlmap_output:
+        formatted_result['Vulnerabilities'] = ["Vulnerable"]
+        formatted_result['Injection Types'] = []
+
+        # Extract injection types
+        injection_lines = sqlmap_output.split('---\n')[1].split('\n')
+        for line in injection_lines:
+            if "Type:" in line:
+                formatted_result['Injection Types'].append(
+                    line.split("Type:")[1].strip())
+
     else:
         formatted_result['Vulnerabilities'] = ["Not Vulnerable"]
 
     # Extract additional information
+    db_start_index = sqlmap_output.find("available databases")
+    if db_start_index != -1:
+        # Extract database names
+        db_lines = sqlmap_output[db_start_index:].split(
+            '\n')[2:-4]  # Exclude unnecessary lines
+        formatted_result['Databases'] = [line.split(']')[1].strip(
+        ) if ']' in line else line.strip() for line in db_lines]
+
     for line in lines:
         if "the back-end DBMS is" in line:
             formatted_result['DBMS'] = line.split(
@@ -73,14 +90,6 @@ def process_sqlmap_output(sqlmap_output):
             formatted_result['OS'] = line.split(":")[1].strip()
         elif "web application technology" in line:
             formatted_result['Web Tech'] = line.split(":")[1].strip()
-
-    # Extract database names if available
-    db_start_index = sqlmap_output.find("available databases")
-    if db_start_index != -1:
-        db_lines = sqlmap_output[db_start_index:].split(
-            '\n')[2:-3]  # Exclude the unnecessary line
-        formatted_result['Databases'] = [line.split(']')[1].strip(
-        ) if ']' in line else line.strip() for line in db_lines]
 
     return formatted_result
 
@@ -92,6 +101,11 @@ def print_formatted_result(formatted_result):
 
     # Add vulnerability information
     table.add_row(["Vulnerability", formatted_result['Vulnerabilities'][0]])
+
+    # Add injection types
+    if 'Injection Types' in formatted_result:
+        table.add_row(["Injection Types", ", ".join(
+            formatted_result['Injection Types'])])
 
     # Add DBMS information
     if 'DBMS' in formatted_result:
