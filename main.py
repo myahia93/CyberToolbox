@@ -1,19 +1,22 @@
-import subprocess
-import os, sys, time 
+import os
+import sys
 from tools.nmap.nmap_menu import nmap_menu
+from tools.sqlmap.sqlmap_menu import sqlmap_menu
 
-def sqlmap_attack():
-    os.system("clear")
-    print_banner()
-    print("Launching SQLmap")
-    url = input("Enter URL: ")
-    os.system(f"python sqlmap.py -u {url}")
+# def sqlmap_attack():
+#     os.system("clear")
+#     print_banner()
+#     print("Launching SQLmap")
+#     url = input("Enter URL: ")
+#     os.system(f"python sqlmap.py -u {url}")
+
 
 def hydra_bruteforce():
     os.system("clear")
     print_banner()
     print("Launching Hydra Bruteforce")
     # Ajoutez votre commande Hydra ici
+
 
 def print_banner():
     main_banner = """
@@ -29,6 +32,7 @@ def print_banner():
 
     print(main_banner)
 
+
 def main():
     while True:
         print_banner()
@@ -42,7 +46,7 @@ def main():
             if option == 1:
                 nmap_menu(print_banner)
             elif option == 2:
-                sqlmap_attack()
+                sqlmap_menu(print_banner)
             elif option == 3:
                 hydra_bruteforce()
             elif option == 0:
@@ -50,10 +54,12 @@ def main():
                 sys.exit()
             else:
                 os.system("clear")
-                print("\033[91mInvalid option. Please enter a number between 0 and 3.\033[0m")
+                print(
+                    "\033[91mInvalid option. Please enter a number between 0 and 3.\033[0m")
         except ValueError:
             os.system("clear")
             print("\033[91mInvalid input. Please enter a valid number.\033[0m")
+
 
 if __name__ == "__main__":
     main()
