@@ -77,7 +77,8 @@ def process_sqlmap_output(sqlmap_output):
     # Extract database names if available
     db_start_index = sqlmap_output.find("available databases")
     if db_start_index != -1:
-        db_lines = sqlmap_output[db_start_index:].split('\n')[2:-2]
+        db_lines = sqlmap_output[db_start_index:].split(
+            '\n')[2:-3]  # Exclude the unnecessary line
         formatted_result['Databases'] = [line.split(']')[1].strip(
         ) if ']' in line else line.strip() for line in db_lines]
 
