@@ -26,7 +26,7 @@ def sqlmap_menu(print_banner_function):
 
     while True:
         if show_banner:
-            sqlmap_menu(print_banner_function)
+            sqlmap_title(print_banner_function)
         else:
             show_banner = True
         print("\n[\033[92m1\033[0m]> \033[96mDatabase Vulnerability Check\033[0m")
