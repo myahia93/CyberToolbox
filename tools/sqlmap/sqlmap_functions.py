@@ -32,61 +32,79 @@ def check_url_validity():
 
 
 def perform_sqlmap_check(url):
-    # Build SQLmap command
+    # Execute SQLmap command
     sqlmap_command = f"sqlmap -u {url} --dbs"
+    sqlmap_output = subprocess.run(
+        sqlmap_command.split(),
+        text=True,
+        capture_output=True
+    ).stdout
 
-    try:
-        # Capture SQLmap command output
-        original_output = subprocess.run(
-            sqlmap_command.split(),
-            text=True,
-            capture_output=True,
-            check=True
-        ).stdout
+    # Process and format the SQLmap output
+    formatted_result = process_sqlmap_output(sqlmap_output)
 
-        # Display original SQLmap output
-        print("\n\033[94mOriginal SQLmap Output:\033[0m")
-        print(original_output)
-
-        # Process and format SQLmap result
-        formatted_result = process_sqlmap_output(original_output)
-
-        # Display formatted result
-        print("\n\033[94mSummary:\033[0m")
-        print_formatted_result(formatted_result)
-
-    except subprocess.CalledProcessError as e:
-        # Handle case where SQLmap command returns an error
-        print("\033[91mError executing SQLmap:\033[0m")
-        print(e.stderr)
+    # Print the formatted result
+    print_formatted_result(formatted_result)
 
 
 def process_sqlmap_output(sqlmap_output):
-    # Parse SQLmap output to extract necessary information
-    # Add code here to extract and format SQLmap results
-    formatted_result = {}  # Use a dictionary to store formatted results
+    formatted_result = {}
 
-    # Placeholder content, replace with actual extraction and formatting logic
-    formatted_result['Vulnerabilities'] = ['Vuln1', 'Vuln2']
-    formatted_result['Databases'] = ['db1', 'db2']
+    # Split SQLmap output into lines
+    lines = sqlmap_output.split('\n')
+
+    # Check if SQLmap detected vulnerabilities
+    if "is potentially vulnerable" in sqlmap_output:
+        formatted_result['Vulnerabilities'] = ["Potentially Vulnerable"]
+    else:
+        formatted_result['Vulnerabilities'] = ["Not Vulnerable"]
+
+    # Extract additional information
+    for line in lines:
+        if "the back-end DBMS is" in line:
+            formatted_result['DBMS'] = line.split(
+                "the back-end DBMS is")[1].strip()
+        elif "web server operating system" in line:
+            formatted_result['OS'] = line.split(":")[1].strip()
+        elif "web application technology" in line:
+            formatted_result['Web Tech'] = line.split(":")[1].strip()
+
+    # Extract database names if available
+    db_start_index = sqlmap_output.find("available databases")
+    if db_start_index != -1:
+        db_lines = sqlmap_output[db_start_index:].split('\n')[2:-2]
+        formatted_result['Databases'] = [
+            line.split(']')[1].strip() for line in db_lines]
 
     return formatted_result
 
 
 def print_formatted_result(formatted_result):
-    # Create PrettyTable with formatted results
+    # Create a PrettyTable with the formatted result
     table = PrettyTable()
+    table.field_names = ["Category", "Value"]
 
-    # Configure table columns (placeholders, adjust as needed)
-    table.field_names = ["Category", "Details"]
+    # Add vulnerability information
+    table.add_row(["Vulnerability", formatted_result['Vulnerabilities'][0]])
 
-    # Add content to the table (placeholders, adjust as needed)
-    table.add_row(["Vulnerabilities", ", ".join(
-        formatted_result.get('Vulnerabilities', []))])
-    table.add_row(["Databases", ", ".join(
-        formatted_result.get('Databases', []))])
+    # Add DBMS information
+    if 'DBMS' in formatted_result:
+        table.add_row(["DBMS", formatted_result['DBMS']])
 
-    # Display PrettyTable
+    # Add OS information
+    if 'OS' in formatted_result:
+        table.add_row(["Operating System", formatted_result['OS']])
+
+    # Add Web Tech information
+    if 'Web Tech' in formatted_result:
+        table.add_row(["Web Application Tech", formatted_result['Web Tech']])
+
+    # Add Database names
+    if 'Databases' in formatted_result:
+        table.add_row(["Databases", "\n".join(formatted_result['Databases'])])
+
+    # Set column alignment and print the table
+    table.align = "l"
     print(table)
 
 
