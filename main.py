@@ -17,7 +17,7 @@ def print_banner():
   ░░░░░░░░░    ░░░░░███ ░░░░░░░░   ░░░░░░  ░░░░░           ░░░░░     ░░░░░░   ░░░░░░  ░░░░░ ░░░░░░░░   ░░░░░░  ░░░░░ ░░░░░ 
                    ░███                                                                                                    
                 ██████
-\033[0;94m                                 .:. Coded by Ismael Mohcine Walid Amina Minas .:.
+\033[0;94m                                 .:. Coded by Ismael Mohcine Walid Amina Abdelmajid Minas .:.
 \033[0m                                	
      """
     print(main_banner)
@@ -26,10 +26,10 @@ def print_banner():
 def main():
     while True:
         print_banner()
-        print("\n[1]> Nmap")
-        print("[2]> SQLmap")
-        print("[3]> Hydra (Bruteforce)")
-        print("[0]> Exit the program")
+        print("\n[\033[92m1\033[0m]> \033[96mNmap\033[0m")
+        print("[\033[92m2\033[0m]> \033[SQLmap\033[0m")
+        print("[\033[92m3\033[0m]> \033[96mHydra (Bruteforce)\033[0m")
+        print("[\033[92m0\033[0m]> \033[96mExit the program\033[0m")
 
         try:
             option = int(input("Enter your option: "))
@@ -40,7 +40,7 @@ def main():
             elif option == 3:
                 hydra_menu(print_banner)
             elif option == 0:
-                print("\033[92mExiting the program. Goodbye!\033[m")
+                print("\033[91mExiting the program. Goodbye!\033[m")
                 sys.exit()
             else:
                 os.system("clear")

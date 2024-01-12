@@ -1,4 +1,3 @@
-import os
 import requests
 import subprocess
 from bs4 import BeautifulSoup
@@ -131,7 +130,7 @@ def print_formatted_result(formatted_result):
 def display_sqlmap_description():
     sqlmap_description = """
     
-    \033[93m
+    \033[0;34m
     SQLmap (SQL Injection and Database Hacking Tool) is an open-source penetration testing tool
     that automates the detection and exploitation of SQL injection vulnerabilities in web applications.
 
@@ -143,7 +142,7 @@ def display_sqlmap_description():
 
     SQLmap is a powerful tool used by security professionals and penetration testers to identify and exploit
     SQL injection vulnerabilities, which can be a serious threat to the security of web applications. 
-    In \033[0;31mCyberToolbox\033[93m, the provided version of SQLmap is simplified and made more
+    In \033[0;31mCyberToolbox\033[0;34m, the provided version of SQLmap is simplified and made more
     user-friendly through a series of questions posed to the user. This approach allows
     for precise and easy configuration of scans.
 
