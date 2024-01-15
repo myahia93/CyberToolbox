@@ -31,6 +31,7 @@ def check_url_validity():
 
 
 def perform_sqlmap_check(url):
+    print("\033[0;34mLoading SQLmap...\033[0m")
     # Execute SQLmap command
     sqlmap_command = f"sqlmap -u {url} --dbs"
     sqlmap_output = subprocess.run(
@@ -85,12 +86,6 @@ def process_sqlmap_output(sqlmap_output):
                                                      1].strip())
             else:
                 break
-
-        # Extract database names
-        # db_lines = sqlmap_output[db_start_index:].split(
-        #     '\n')[2:-4]  # Exclude unnecessary lines
-        # formatted_result['Databases'] = [line.split(']')[1].strip(
-        # ) if ']' in line else line.strip() for line in db_lines]
 
     for line in lines:
         if "the back-end DBMS is" in line:
