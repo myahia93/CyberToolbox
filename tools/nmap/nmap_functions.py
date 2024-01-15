@@ -158,14 +158,16 @@ def process_nmap_output(nmap_output):
     lines = nmap_output.split('\n')
     for line in lines:
         if line.startswith("Nmap scan report"):
-            current_host = line.split()[-1]  # Update the current host
+            # Extract only the host name without parentheses
+            current_host = line.split("(")[0].split()[-1]
         elif "/tcp" in line:
             fields = line.split()
             service = fields[2]
             port = fields[0].split('/')[0]
             state = fields[1]
-            table.add_row([current_host, service, port, state])
-            formatted_result.append([current_host, service, port, state])
+            color_state = f"\033[91m{state}\033[0m" if state == "closed" else f"\033[92m{state}\033[0m"
+            table.add_row([current_host, service, port, color_state])
+            formatted_result.append([current_host, service, port, color_state])
 
     # Set column alignment
     table.align = "l"
