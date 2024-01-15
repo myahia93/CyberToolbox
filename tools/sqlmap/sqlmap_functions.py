@@ -75,11 +75,16 @@ def process_sqlmap_output(sqlmap_output):
     # Extract additional information
     db_start_index = sqlmap_output.find("available databases")
     if db_start_index != -1:
-        # Extract database names
-        db_lines = sqlmap_output[db_start_index:].split(
-            '\n')[2:-4]  # Exclude unnecessary lines
-        formatted_result['Databases'] = [line.split(']')[1].strip(
-        ) if ']' in line else line.strip() for line in db_lines]
+        # Extract lines after "available databases"
+        db_lines = sqlmap_output[db_start_index:].split('\n')[1:]
+        # Stop when encountering an empty line
+        formatted_result['Databases'] = []
+        for line in db_lines:
+            if line.strip():  # Check if the line is not empty
+                formatted_result['Databases'].append(line.split(']')[
+                                                     1].strip())
+            else:
+                break
 
     for line in lines:
         if "the back-end DBMS is" in line:

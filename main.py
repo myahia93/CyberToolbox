@@ -40,7 +40,7 @@ def main():
             elif option == 3:
                 hydra_menu(print_banner)
             elif option == 0:
-                print("\033[92mExiting the program. Goodbye!\033[m")
+                print("\033[92m\nExiting the program. Goodbye!\033[m")
                 sys.exit()
             else:
                 os.system("clear")
