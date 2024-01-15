@@ -159,7 +159,7 @@ def process_nmap_output(nmap_output):
     for line in lines:
         if line.startswith("Nmap scan report"):
             current_host = line.split()[-1]  # Update the current host
-        elif "/tcp" in line and "open" in line:
+        elif "/tcp" in line:
             fields = line.split()
             service = fields[2]
             port = fields[0].split('/')[0]
