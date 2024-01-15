@@ -86,6 +86,12 @@ def process_sqlmap_output(sqlmap_output):
             else:
                 break
 
+        # Extract database names
+        # db_lines = sqlmap_output[db_start_index:].split(
+        #     '\n')[2:-4]  # Exclude unnecessary lines
+        # formatted_result['Databases'] = [line.split(']')[1].strip(
+        # ) if ']' in line else line.strip() for line in db_lines]
+
     for line in lines:
         if "the back-end DBMS is" in line:
             formatted_result['DBMS'] = line.split(
@@ -125,7 +131,7 @@ def print_formatted_result(formatted_result):
 
     # Add Database names
     if 'Databases' in formatted_result:
-        table.add_row(["Databases", "\n".join(formatted_result['Databases'])])
+        table.add_row(["Databases", ", ".join(formatted_result['Databases'])])
 
     # Set column alignment and print the table
     table.align = "l"
