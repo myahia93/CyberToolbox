@@ -153,17 +153,19 @@ def process_nmap_output(nmap_output):
     table = PrettyTable()
     table.field_names = ["Host", "Service", "Port", "State"]
 
+    current_host = None  # Variable to keep track of the current host being processed
+
     lines = nmap_output.split('\n')
     for line in lines:
         if line.startswith("Nmap scan report"):
-            host = line.split()[-1]
+            current_host = line.split()[-1]  # Update the current host
         elif "/tcp" in line and "open" in line:
             fields = line.split()
             service = fields[2]
             port = fields[0].split('/')[0]
             state = fields[1]
-            table.add_row([host, service, port, state])
-            formatted_result.append([host, service, port, state])
+            table.add_row([current_host, service, port, state])
+            formatted_result.append([current_host, service, port, state])
 
     # Set column alignment
     table.align = "l"
