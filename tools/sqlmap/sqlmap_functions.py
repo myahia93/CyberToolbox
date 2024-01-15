@@ -71,7 +71,7 @@ def process_sqlmap_output(sqlmap_output):
                     line.split("Type:")[1].strip())
 
     else:
-        formatted_result['Vulnerabilities'] = ["Not Vulnerable"]
+        formatted_result['Vulnerabilities'] = ["\033[92mNot Vulnerable\033[0m"]
 
     # Extract additional information
     db_start_index = sqlmap_output.find("available databases")
@@ -114,7 +114,8 @@ def print_formatted_result(formatted_result):
 
     # Add DBMS information
     if 'DBMS' in formatted_result:
-        table.add_row(["DBMS", formatted_result['DBMS']])
+        table.add_row(["DBMS", "\033[95m" +
+                      formatted_result['DBMS']+"\033[0m"])
 
     # Add OS information
     if 'OS' in formatted_result:
