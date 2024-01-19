@@ -38,10 +38,10 @@ def initialize_available_options():
 def get_additional_options_menu(ip_or_network):
     additional_options = ""
 
-    # Initialize available options
-    initialize_available_options()
-
     while True:
+        # Initialize available options
+        initialize_available_options()
+
         print("\nChoose an option:")
 
         # Display available options with green numbers
@@ -62,7 +62,7 @@ def get_additional_options_menu(ip_or_network):
             if option == 0:
                 break
             elif option in available_options:
-                selected_option = available_options.pop(option)
+                selected_option = available_options.pop(option).copy()
                 if selected_option["submenu"]:
                     additional_options += get_submenu_option(selected_option)
                 elif selected_option["name"] == "Custom Nmap Option (For Nmap Expert)":
@@ -78,8 +78,6 @@ def get_additional_options_menu(ip_or_network):
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
 
-    # Reset available options after returning from submenu or completing the scan
-    initialize_available_options()
     return additional_options
 
 
@@ -91,7 +89,6 @@ def get_submenu_option(selected_option):
 
 
 def get_port_filtering_options():
-    global available_options
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
     print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
