@@ -79,6 +79,13 @@ def get_additional_options_menu(ip_or_network):
     return additional_options
 
 
+def get_submenu_option(selected_option):
+    if selected_option["name"] == "Port Filtering":
+        return get_port_filtering_options()
+    else:
+        return ""
+
+
 def get_port_filtering_options():
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
