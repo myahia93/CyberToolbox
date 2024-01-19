@@ -31,11 +31,12 @@ def initialize_available_options():
     }
 
 
-def get_additional_options_menu(ip_or_network):
+def get_additional_options_menu(ip_or_network, available_options=None):
     additional_options = ""
 
-    # Initialize available options
-    available_options = initialize_available_options()
+    # Initialize available options if not provided
+    if available_options is None:
+        available_options = initialize_available_options()
 
     while True:
         print("\nChoose an option:")
@@ -60,7 +61,8 @@ def get_additional_options_menu(ip_or_network):
             elif option in available_options:
                 selected_option = available_options.pop(option)
                 if selected_option["submenu"]:
-                    additional_options += get_submenu_option(selected_option)
+                    additional_options += get_submenu_option(
+                        selected_option, available_options)
                 elif selected_option["name"] == "Custom Nmap Option (For Nmap Expert)":
                     additional_options += input(
                         "\n\033[92mEnter your custom Nmap option: \033[0m") + " "
@@ -79,14 +81,14 @@ def get_additional_options_menu(ip_or_network):
     return additional_options
 
 
-def get_submenu_option(selected_option):
+def get_submenu_option(selected_option, available_options):
     if selected_option["name"] == "Port Filtering":
-        return get_port_filtering_options()
+        return get_port_filtering_options(available_options)
     else:
         return ""
 
 
-def get_port_filtering_options():
+def get_port_filtering_options(available_options):
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
     print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
