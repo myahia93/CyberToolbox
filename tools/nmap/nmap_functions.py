@@ -73,6 +73,8 @@ def get_additional_options_menu(ip_or_network):
                         "\n\033[92mEnter your custom Nmap option: \033[0m") + " "
                 else:
                     additional_options += selected_option["flag"] + " "
+                # Remove the selected option from available options
+                available_options.pop(option, None)
             else:
                 print(
                     "\033[91mInvalid option. Please enter a valid number.\033[0m")
