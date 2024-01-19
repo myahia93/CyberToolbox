@@ -23,10 +23,10 @@ def get_user_ip_input():
 
 # Nmap Options :
 available_options = {
-    1: {"name": "Port Filtering", "flag": "-F"},
-    2: {"name": "Operating System Detection (SUDO REQUIRED)", "flag": "-O"},
-    3: {"name": "Service Version Detection", "flag": "-sV"},
-    4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": ""},
+    1: {"name": "Port Filtering", "flag": "-F", "submenu": True},
+    2: {"name": "Operating System Detection (SUDO REQUIRED)", "flag": "-O", "submenu": False},
+    3: {"name": "Service Version Detection", "flag": "-sV", "submenu": False},
+    4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": "", "submenu": False},
 }
 
 
@@ -39,6 +39,9 @@ def get_additional_options_menu(ip_or_network):
         for option_num, option_data in available_options.items():
             print(f"[{option_num}]> \033[96m{option_data['name']}\033[0m")
 
+        print(
+            "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
+
         print("\nConstruction of the Nmap command:")
         print("\033[93m", end='')  # Yellow color for Nmap command
         print(f"nmap {ip_or_network} {additional_options}", end='')
@@ -46,11 +49,14 @@ def get_additional_options_menu(ip_or_network):
 
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
-            if option in available_options:
-                selected_option = available_options.pop(option)
-                additional_options += selected_option["flag"] + " "
-            elif option == 0:
+            if option == 0:
                 break
+            elif option in available_options:
+                selected_option = available_options.pop(option)
+                if selected_option["submenu"]:
+                    additional_options += get_submenu_option(selected_option)
+                else:
+                    additional_options += selected_option["flag"] + " "
             else:
                 print(
                     "\033[91mInvalid option. Please enter a valid number.\033[0m")
@@ -59,6 +65,15 @@ def get_additional_options_menu(ip_or_network):
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
     return additional_options
+
+
+def get_submenu_option(selected_option):
+    if selected_option["name"] == "Port Filtering":
+        return get_port_filtering_options()
+    elif selected_option["name"] == "Custom Nmap Option (For Nmap Expert)":
+        return input("\n\033[92mEnter your custom Nmap option: \033[0m") + " "
+    else:
+        return ""
 
 
 def get_port_filtering_options():
