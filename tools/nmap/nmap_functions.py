@@ -22,17 +22,22 @@ def get_user_ip_input():
 
 
 # Nmap Options :
+available_options = {
+    1: {"name": "Port Filtering", "flag": "-F"},
+    2: {"name": "Operating System Detection (SUDO REQUIRED)", "flag": "-O"},
+    3: {"name": "Service Version Detection", "flag": "-sV"},
+    4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": ""},
+}
+
+
 def get_additional_options_menu(ip_or_network):
     additional_options = ""
     while True:
         print("\nChoose an option:")
-        print("\n[\033[92m1\033[0m]> \033[96mPort Filtering\033[0m")
-        print(
-            "[\033[92m2\033[0m]> \033[96mOperating System Detection (\033[91mSUDO REQUIRED\033[96m)\033[0m")
-        print("[\033[92m3\033[0m]> \033[96mService Version Detection\033[0m")
-        print("[\033[92m4\033[0m]> \033[96mCustom Nmap Option (For Nmap Expert)\033[0m")
-        print(
-            "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
+
+        # Display available options
+        for option_num, option_data in available_options.items():
+            print(f"[{option_num}]> \033[96m{option_data['name']}\033[0m")
 
         print("\nConstruction of the Nmap command:")
         print("\033[93m", end='')  # Yellow color for Nmap command
@@ -41,20 +46,14 @@ def get_additional_options_menu(ip_or_network):
 
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
-            if option == 1:
-                additional_options += get_port_filtering_options()
-            elif option == 2:
-                additional_options += "-O "
-            elif option == 3:
-                additional_options += "-sV "
-            elif option == 4:
-                additional_options += input(
-                    "\n\033[92mEnter your custom Nmap option: \033[0m") + " "
+            if option in available_options:
+                selected_option = available_options.pop(option)
+                additional_options += selected_option["flag"] + " "
             elif option == 0:
                 break
             else:
                 print(
-                    "\033[91mInvalid option. Please enter 0, 1, 2, or 3.\033[0m")
+                    "\033[91mInvalid option. Please enter a valid number.\033[0m")
         except ValueError:
             print(
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
