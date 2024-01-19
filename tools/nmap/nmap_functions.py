@@ -22,8 +22,12 @@ def get_user_ip_input():
 
 
 # Nmap Options :
+available_options = {}
+
+
 def initialize_available_options():
-    return {
+    global available_options
+    available_options = {
         1: {"name": "Port Filtering", "flag": "-F", "submenu": True},
         2: {"name": "Operating System Detection (\033[91mSUDO REQUIRED\033[96m)", "flag": "-O", "submenu": False},
         3: {"name": "Service Version Detection", "flag": "-sV", "submenu": False},
@@ -31,14 +35,11 @@ def initialize_available_options():
     }
 
 
-# Déclarer available_options en tant que variable globale
-available_options = initialize_available_options()
-
-
 def get_additional_options_menu(ip_or_network):
-    global available_options  # Déclarer la variable comme globale
-
     additional_options = ""
+
+    # Initialize available options
+    initialize_available_options()
 
     while True:
         print("\nChoose an option:")
@@ -59,8 +60,6 @@ def get_additional_options_menu(ip_or_network):
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 0:
-                # Réinitialiser available_options après avoir retourné au menu principal
-                available_options = initialize_available_options()
                 break
             elif option in available_options:
                 selected_option = available_options.pop(option)
@@ -79,6 +78,8 @@ def get_additional_options_menu(ip_or_network):
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
 
+    # Reset available options after returning from submenu or completing the scan
+    initialize_available_options()
     return additional_options
 
 
@@ -90,6 +91,7 @@ def get_submenu_option(selected_option):
 
 
 def get_port_filtering_options():
+    global available_options
     print("\nWhich port would you like to scan ?")
     print("\n[\033[92m1\033[0m]> \033[96mMost common ports (HTTP, SSH, Telnet, DNS, FTP...)\033[0m")
     print("[\033[92m2\033[0m]> \033[96mSpecify port or port range\033[0m")
