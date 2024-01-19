@@ -36,6 +36,7 @@ def initialize_available_options():
 
 
 def get_additional_options_menu(ip_or_network):
+    global available_options
     additional_options = ""
 
     while True:
@@ -43,7 +44,7 @@ def get_additional_options_menu(ip_or_network):
         initialize_available_options()
 
         # Save options to display in a variable
-        display_options = available_options.copy()
+        display_options = dict(available_options)
 
         print("\nChoose an option:")
 
