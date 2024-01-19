@@ -59,6 +59,8 @@ def get_additional_options_menu(ip_or_network):
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 0:
+                # Réinitialiser available_options après avoir retourné au menu principal
+                available_options = initialize_available_options()
                 break
             elif option in available_options:
                 selected_option = available_options.pop(option)
@@ -77,8 +79,6 @@ def get_additional_options_menu(ip_or_network):
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
 
-    # Réinitialiser available_options après avoir retourné du sous-menu ou terminé le scan
-    available_options = initialize_available_options()
     return additional_options
 
 
