@@ -22,16 +22,21 @@ def get_user_ip_input():
 
 
 # Nmap Options :
-available_options = {
-    1: {"name": "Port Filtering", "flag": "-F", "submenu": True},
-    2: {"name": "Operating System Detection (\033[91mSUDO REQUIRED\033[96m)", "flag": "-O", "submenu": False},
-    3: {"name": "Service Version Detection", "flag": "-sV", "submenu": False},
-    4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": "", "submenu": False},
-}
+def initialize_available_options():
+    return {
+        1: {"name": "Port Filtering", "flag": "-F", "submenu": True},
+        2: {"name": "Operating System Detection (\033[91mSUDO REQUIRED\033[96m)", "flag": "-O", "submenu": False},
+        3: {"name": "Service Version Detection", "flag": "-sV", "submenu": False},
+        4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": "", "submenu": False},
+    }
 
 
 def get_additional_options_menu(ip_or_network):
     additional_options = ""
+
+    # Initialize available options
+    available_options = initialize_available_options()
+
     while True:
         print("\nChoose an option:")
 
@@ -68,14 +73,10 @@ def get_additional_options_menu(ip_or_network):
             print(
                 "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()  # Adds a line to separate the error message from the prompt)
+
+    # Reset available options after returning from submenu or completing the scan
+    available_options = initialize_available_options()
     return additional_options
-
-
-def get_submenu_option(selected_option):
-    if selected_option["name"] == "Port Filtering":
-        return get_port_filtering_options()
-    else:
-        return ""
 
 
 def get_port_filtering_options():
