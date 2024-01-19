@@ -24,7 +24,7 @@ def get_user_ip_input():
 # Nmap Options :
 available_options = {
     1: {"name": "Port Filtering", "flag": "-F", "submenu": True},
-    2: {"name": "Operating System Detection (SUDO REQUIRED)", "flag": "-O", "submenu": False},
+    2: {"name": "Operating System Detection (\033[91mSUDO REQUIRED\033[96m)", "flag": "-O", "submenu": False},
     3: {"name": "Service Version Detection", "flag": "-sV", "submenu": False},
     4: {"name": "Custom Nmap Option (For Nmap Expert)", "flag": "", "submenu": False},
 }
@@ -35,9 +35,10 @@ def get_additional_options_menu(ip_or_network):
     while True:
         print("\nChoose an option:")
 
-        # Display available options
+        # Display available options with green numbers
         for option_num, option_data in available_options.items():
-            print(f"[{option_num}]> \033[96m{option_data['name']}\033[0m")
+            print(
+                f"[\033[92m{option_num}\033[0m]> \033[96m{option_data['name']}\033[0m")
 
         print(
             "[\033[92m0\033[0m]> \033[96mNo additional option (continue to scan)\033[0m")
@@ -55,6 +56,9 @@ def get_additional_options_menu(ip_or_network):
                 selected_option = available_options.pop(option)
                 if selected_option["submenu"]:
                     additional_options += get_submenu_option(selected_option)
+                elif selected_option["name"] == "Custom Nmap Option (For Nmap Expert)":
+                    additional_options += input(
+                        "\n\033[92mEnter your custom Nmap option: \033[0m") + " "
                 else:
                     additional_options += selected_option["flag"] + " "
             else:
@@ -70,8 +74,6 @@ def get_additional_options_menu(ip_or_network):
 def get_submenu_option(selected_option):
     if selected_option["name"] == "Port Filtering":
         return get_port_filtering_options()
-    elif selected_option["name"] == "Custom Nmap Option (For Nmap Expert)":
-        return input("\n\033[92mEnter your custom Nmap option: \033[0m") + " "
     else:
         return ""
 
