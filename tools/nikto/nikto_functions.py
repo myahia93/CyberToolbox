@@ -45,18 +45,16 @@ def perform_nikto_check(target):
     # Run Nikto scan
     try:
         nikto_output = subprocess.check_output(
-            nikto_command, stderr=subprocess.STDOUT, text=True, capture_output=True)
+            nikto_command, stderr=subprocess.STDOUT, text=True)
 
         # Parse Nikto output to extract relevant information
-        nikto_results = parse_nikto_output(nikto_output.stdout)
+        nikto_results = parse_nikto_output(nikto_output)
 
         # Print the formatted results
         print_nikto_results(nikto_results)
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-        print("Nikto output (stderr):")
-        print(e.output.decode())
 
 
 def parse_nikto_output(nikto_output):
