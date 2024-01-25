@@ -1,24 +1,22 @@
 import os
-from .nikto_functions import display_nikto_description
+from .nikto_functions import display_nikto_description, check_target_validity, perform_nikto_check
 
 
-def nmap_title(print_banner_function):
-    nmap_banner = """
-    \033[0;33m
- ██████   █████                                    
-░░██████ ░░███                                     
- ░███░███ ░███  █████████████    ██████   ████████ 
- ░███░░███░███ ░░███░░███░░███  ░░░░░███ ░░███░░███
- ░███ ░░██████  ░███ ░███ ░███   ███████  ░███ ░███
- ░███  ░░█████  ░███ ░███ ░███  ███░░███  ░███ ░███
- █████  ░░█████ █████░███ █████░░████████ ░███████ 
-░░░░░    ░░░░░ ░░░░░ ░░░ ░░░░░  ░░░░░░░░  ░███░░░  
-                                          ░███     
-                                          █████    
-                                         ░░░░░     
+def nikto_title(print_banner_function):
+    nikto_banner = """
+    \033[1;35m
+ ██████   █████  ███  █████       █████            
+░░██████ ░░███  ░░░  ░░███       ░░███             
+ ░███░███ ░███  ████  ░███ █████ ███████    ██████ 
+ ░███░░███░███ ░░███  ░███░░███ ░░░███░    ███░░███
+ ░███ ░░██████  ░███  ░██████░    ░███    ░███ ░███
+ ░███  ░░█████  ░███  ░███░░███   ░███ ███░███ ░███
+ █████  ░░█████ █████ ████ █████  ░░█████ ░░██████ 
+░░░░░    ░░░░░ ░░░░░ ░░░░ ░░░░░    ░░░░░   ░░░░░░  
+                                                                                                     
     \033[0m   
     """
-    print(nmap_banner)
+    print(nikto_banner)
 
 
 def nmap_menu(print_banner_function):
@@ -27,7 +25,7 @@ def nmap_menu(print_banner_function):
 
     while True:
         if show_banner:
-            nmap_title(print_banner_function)
+            nikto_title(print_banner_function)
         else:
             show_banner = True
         print("\n[\033[92m1\033[0m]> \033[96mWebserver Vulnerability Check\033[0m")
@@ -37,7 +35,12 @@ def nmap_menu(print_banner_function):
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 1:
-                return  # TODO
+                target = check_target_validity()
+                if target:
+                    perform_nikto_check(target)
+                else:
+                    print(
+                        "\n\033[91mInvalid target. Please enter a valid URL or IP address.\033[0m")
             elif option == 2:
                 display_nikto_description()
                 show_banner = False
