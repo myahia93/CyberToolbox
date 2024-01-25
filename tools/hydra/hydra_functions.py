@@ -22,7 +22,7 @@ def display_hydra_description():
      for custom rules and conditions.
 
    Hydra is widely used by security professionals, system administrators, and security researchers 
-   to assess the robustness of passwords on networks. In \033[0;31mCyberToolbox\033[0;32m, sthe provided version of 
+   to assess the robustness of passwords on networks. In \033[0;31mCyberToolbox\033[0;32m, the provided version of 
    Hydra is simplified and made more user-friendly through a series of questions posed to the user, 
    allowing for precise and easy configuration of brute-force tests.\033[0m
     """

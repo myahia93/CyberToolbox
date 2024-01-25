@@ -134,7 +134,7 @@ def display_nmap_description():
 
     Nmap is widely used by security professionals, system administrators, and network
     engineers for tasks such as network inventory, vulnerability scanning, and network
-    monitoring. In \033[0;31mSecuToolkit\033[93m, the provided version of Nmap is simplified and made more
+    monitoring. In \033[0;31mCyber Toolbox\033[93m, the provided version of Nmap is simplified and made more
     user-friendly through a series of questions posed to the user. This approach allows
     for precise and easy configuration of scans.\033[0m
 
