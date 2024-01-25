@@ -3,6 +3,7 @@ import sys
 from tools.nmap.nmap_menu import nmap_menu
 from tools.sqlmap.sqlmap_menu import sqlmap_menu
 from tools.hydra.hydra_menu import hydra_menu
+from tools.nikto.nikto_menu import nikto_menu
 
 
 def print_banner():
@@ -29,6 +30,7 @@ def main():
         print("\n[\033[92m1\033[0m]> \033[96mNmap\033[0m")
         print("[\033[92m2\033[0m]> \033[96mSQLmap\033[0m")
         print("[\033[92m3\033[0m]> \033[96mHydra (Bruteforce)\033[0m")
+        print("[\033[92m4\033[0m]> \033[96mNikto\033[0m")
         print("[\033[91m0\033[0m]> \033[91mExit the program\033[0m")
 
         try:
@@ -39,6 +41,8 @@ def main():
                 sqlmap_menu(print_banner)
             elif option == 3:
                 hydra_menu(print_banner)
+            elif option == 4:
+                nikto_menu(print_banner)
             elif option == 0:
                 print("\033[92m\nExiting the program. Goodbye!\033[m")
                 sys.exit()
