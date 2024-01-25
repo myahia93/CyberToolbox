@@ -32,7 +32,7 @@ def check_target_validity():
 
 
 def perform_nikto_check(target):
-    print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
+    print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
 
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target]
@@ -41,50 +41,57 @@ def perform_nikto_check(target):
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Run Nikto scan and capture the output
+    # Run Nikto scan
     try:
-        process = subprocess.Popen(
-            nikto_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        nikto_output = subprocess.check_output(
+            nikto_command, stderr=subprocess.STDOUT, text=True)
 
-        # Variables to store the information
-        basic_info = []
-        vuln_info = []
+        # Parse Nikto output to extract relevant information
+        nikto_results = parse_nikto_output(nikto_output)
 
-        # Process each line of the output in real-time
-        for line in iter(process.stdout.readline, ''):
-            # Print the line in real-time
-            print(line.strip())
-
-            # Check for the start of basic information
-            if line.startswith("+ Target"):
-                basic_info.append(line.strip())
-
-            # Check for the start of vulnerability information
-            elif line.startswith("+ "):
-                vuln_info.append(line.strip())
-
-        # Wait for the process to finish
-        process.communicate()
-
-        # Print basic information
-        print("\n\033[1;35mBasic Information:\033[0m")
-        for info in basic_info:
-            print(info)
-
-        # Print table with vulnerabilities
-        if vuln_info:
-            print("\n\033[1;35mVulnerabilities:\033[0m")
-            vuln_table = PrettyTable(["ID", "Description", "Impact", "URL"])
-            for info in vuln_info:
-                _, vuln_id, vuln_desc, vuln_impact, vuln_url = info.split(
-                    "|", 4)
-                vuln_table.add_row(
-                    [vuln_id.strip(), vuln_desc.strip(), vuln_impact.strip(), vuln_url.strip()])
-            print(vuln_table)
+        # Print the formatted results
+        print_nikto_results(nikto_results)
 
     except subprocess.CalledProcessError as e:
-        # Handle errors without printing them
-        print("\033[1;31mError during Nikto scan:\033[0m", e)
+        print(f"An error occurred: {e}")
+
+
+def parse_nikto_output(nikto_output):
+    # Parse the Nikto output and extract relevant information
+    nikto_results = []
+
+    # Extract lines starting from "+ " which contain vulnerability information
+    vuln_lines = [line.strip()
+                  for line in nikto_output.splitlines() if line.startswith("+ ")]
+
+    # Parse vulnerability lines and populate nikto_results list
+    for vuln_line in vuln_lines:
+        # Remove the leading "+ " and split the line into category and description
+        category, description = vuln_line[2:].split(":", 1)
+        nikto_results.append(
+            {"category": category.strip(), "description": description.strip()})
+
+    return nikto_results
+
+
+def print_nikto_results(scan_results):
+    # Create a PrettyTable
+    table = PrettyTable()
+
+    # Define table headers
+    table.field_names = ["Category", "Description"]
+
+    # Populate the table with scan results
+    for result in scan_results:
+        table.add_row([result["category"], result["description"]])
+
+    # Set column alignment
+    table.align["Category"] = "l"
+    table.align["Description"] = "l"
+
+    # Print the table with color formatting
+    print("\033[1;35mNikto Scan Results:\033[0m")
+    print(table)
 
 
 def display_nikto_description():
