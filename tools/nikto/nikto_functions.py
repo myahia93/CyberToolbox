@@ -1,8 +1,8 @@
 import ipaddress
-import requests
 import subprocess
 from urllib.parse import urlparse
 from prettytable import PrettyTable
+from termcolor import colored
 
 
 def check_target_validity():
@@ -32,19 +32,51 @@ def check_target_validity():
                 print()
 
 
-def perform_nikto_check(target):
-    # Prepare Nikto command
-    nikto_command = ["nikto", "-h", target]
+def perform_nikto_check(url):
+    loading_message = "Running Nikto scan. This may take a few minutes..."
+    print(colored(loading_message, "yellow"))
 
-    # Check if target starts with "https" and add "-ssl" option accordingly
-    if target.startswith("https"):
-        nikto_command.append("-ssl")
+    # Build Nikto command
+    nikto_command = f"nikto -h {url}"
 
-    # Run Nikto scan
-    try:
-        subprocess.run(nikto_command, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+    # Execute Nikto command and capture output
+    nikto_output = os.popen(nikto_command).read()
+
+    # Display Nikto results in a PrettyTable
+    display_nikto_results(nikto_output)
+
+
+def display_nikto_results(nikto_output):
+    # Check if any host was found
+    if "0 host(s) tested" in nikto_output:
+        print(colored("\nNo host found.", "red"))
+        return
+
+    # Create a PrettyTable
+    table = PrettyTable()
+    table.field_names = ["Host", "Port", "Server", "Vulnerabilities"]
+
+    # Parse Nikto output and populate PrettyTable
+    lines = nikto_output.split("\n")
+    for line in lines:
+        if line.startswith("+ Target IP:"):
+            host_ip = line.split(":")[1].strip()
+        elif line.startswith("+ Target Port:"):
+            port = line.split(":")[1].strip()
+        elif line.startswith("+ Server:"):
+            server = line.split(":")[1].strip()
+        elif line.startswith("+"):
+            vulnerability = line[1:].strip()
+            table.add_row([host_ip, port, server, vulnerability])
+
+    # Check if any vulnerabilities were found
+    if table.rowcount == 0:
+        print(colored("\nNo vulnerabilities found.", "green"))
+        return
+
+    # Print the PrettyTable with colored headers
+    print(colored("\nNikto Scan Results", "blue"))
+    print(table)
 
 
 def display_nikto_description():
