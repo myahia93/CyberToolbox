@@ -32,7 +32,8 @@ def check_target_validity():
 
 
 def perform_nikto_check(target):
-    print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
+    print(
+        "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
 
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target]
@@ -54,6 +55,8 @@ def perform_nikto_check(target):
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
+        print("Nikto output (stderr):")
+        print(e.output.decode())
 
 
 def parse_nikto_output(nikto_output):
