@@ -1,5 +1,5 @@
 import ipaddress
-import os
+import subprocess
 from urllib.parse import urlparse
 from prettytable import PrettyTable
 from termcolor import colored
@@ -32,57 +32,56 @@ def check_target_validity():
                 print()
 
 
-def perform_nikto_check(url):
-    loading_message = "\nRunning Nikto scan. This may take a few minutes..."
-    print(colored(loading_message, "purple"))
+def perform_nikto_check(target):
+    print("\n\033[1;35mLoading Nikto...\033[0m")
 
-    # Build Nikto command
-    nikto_command = f"nikto -h {url}"
+    # Prepare Nikto command
+    nikto_command = ["nikto", "-h", target]
 
-    # Execute Nikto command and capture output
-    nikto_output = os.popen(nikto_command).read()
+    # Check if target starts with "https" and add "-ssl" option accordingly
+    if target.startswith("https"):
+        nikto_command.append("-ssl")
 
-    # Display Nikto results in a PrettyTable
-    display_nikto_results(nikto_output)
+    # Run Nikto scan
+    try:
+        nikto_output = subprocess.check_output(
+            nikto_command, stderr=subprocess.STDOUT, text=True)
+        display_nikto_results(nikto_output)
+    except subprocess.CalledProcessError as e:
+        print(f"\033[91mAn error occurred: {e}\033[0m")
 
 
-def display_nikto_results(nikto_output):
-    # Check if Nikto reported any errors
-    if "+ ERROR:" in nikto_output:
-        print(colored("\nNikto encountered errors:", "red"))
-        print(nikto_output)
+def display_nikto_results(output):
+    # Check if there are no hosts found
+    if "0 host(s) tested" in output:
+        print("\033[93mNo hosts found.\033[0m")
         return
 
-    # Check if any host was found
-    if "0 host(s) tested" in nikto_output:
-        print(colored("\nNo host found.", "red"))
-        return
-
-    # Create a PrettyTable
+    # Prepare PrettyTable for results
     table = PrettyTable()
-    table.field_names = ["Host", "Port", "Server", "Vulnerabilities"]
+    table.field_names = ["Host", "Port", "Description"]
+    table.align["Description"] = "l"
 
-    # Parse Nikto output and populate PrettyTable
-    lines = nikto_output.split("\n")
+    # Parse Nikto output and populate the table
+    lines = output.split("\n")
+    current_host = None
+
     for line in lines:
         if line.startswith("+ Target IP:"):
-            host_ip = line.split(":")[1].strip()
+            current_host = line.split()[-1]
+        elif line.startswith("+ Target Hostname:"):
+            current_host = line.split()[-1]
         elif line.startswith("+ Target Port:"):
-            port = line.split(":")[1].strip()
-        elif line.startswith("+ Server:"):
-            server = line.split(":")[1].strip()
-        elif line.startswith("+") and not line.startswith("+ ERROR:"):
-            vulnerability = line[1:].strip()
-            table.add_row([host_ip, port, server, vulnerability])
+            port = line.split()[-1]
+        elif line.startswith("+ "):
+            description = line[2:]
+            table.add_row([current_host, port, description])
 
-    # Check if any vulnerabilities were found
-    if table.rowcount == 0:
-        print(colored("\nNo vulnerabilities found.", "green"))
-        return
-
-    # Print the PrettyTable with colored headers
-    print(colored("\nNikto Scan Results", "blue"))
-    print(table)
+    # Check if the table is empty
+    if not table:
+        print("\033[93mNo vulnerabilities found.\033[0m")
+    else:
+        print(table)
 
 
 def display_nikto_description():
