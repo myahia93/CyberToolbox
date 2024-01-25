@@ -43,32 +43,40 @@ def perform_nikto_check(target):
 
     # Run Nikto scan and capture the output
     try:
-        result = subprocess.run(nikto_command, check=True,
-                                capture_output=True, text=True)
-        output_lines = result.stdout.splitlines()
+        process = subprocess.Popen(
+            nikto_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        # Print the raw output for debugging
-        print("\033[1;35mRaw Nikto Output:\033[0m")
-        for line in output_lines:
-            print(line)
+        # Variables to store the information
+        basic_info = []
+        vuln_info = []
 
-        # Extract basic information
-        basic_info = [
-            line for line in output_lines if line.startswith("+ Target")]
+        # Process each line of the output in real-time
+        for line in iter(process.stdout.readline, ''):
+            # Print the line in real-time
+            print(line.strip())
 
-        # Extract vulnerability information
-        vuln_lines = [line for line in output_lines if line.startswith("+ ")]
+            # Check for the start of basic information
+            if line.startswith("+ Target"):
+                basic_info.append(line.strip())
+
+            # Check for the start of vulnerability information
+            elif line.startswith("+ "):
+                vuln_info.append(line.strip())
+
+        # Wait for the process to finish
+        process.communicate()
 
         # Print basic information
-        for line in basic_info:
-            print(line)
+        print("\n\033[1;35mBasic Information:\033[0m")
+        for info in basic_info:
+            print(info)
 
         # Print table with vulnerabilities
-        if vuln_lines:
+        if vuln_info:
             print("\n\033[1;35mVulnerabilities:\033[0m")
             vuln_table = PrettyTable(["ID", "Description", "Impact", "URL"])
-            for line in vuln_lines:
-                _, vuln_id, vuln_desc, vuln_impact, vuln_url = line.split(
+            for info in vuln_info:
+                _, vuln_id, vuln_desc, vuln_impact, vuln_url = info.split(
                     "|", 4)
                 vuln_table.add_row(
                     [vuln_id.strip(), vuln_desc.strip(), vuln_impact.strip(), vuln_url.strip()])
