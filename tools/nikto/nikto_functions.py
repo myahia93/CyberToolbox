@@ -47,6 +47,11 @@ def perform_nikto_check(target):
                                 capture_output=True, text=True)
         output_lines = result.stdout.splitlines()
 
+        # Print the raw output for debugging
+        print("\033[1;35mRaw Nikto Output:\033[0m")
+        for line in output_lines:
+            print(line)
+
         # Extract basic information
         basic_info = [
             line for line in output_lines if line.startswith("+ Target")]
@@ -71,7 +76,7 @@ def perform_nikto_check(target):
 
     except subprocess.CalledProcessError as e:
         # Handle errors without printing them
-        pass
+        print("\033[1;31mError during Nikto scan:\033[0m", e)
 
 
 def display_nikto_description():
