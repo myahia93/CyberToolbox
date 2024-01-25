@@ -47,7 +47,7 @@ def check_target_validity():
 #     except subprocess.CalledProcessError as e:
 #         print(f"An error occurred: {e}")
 
-def perform_nikto_check(target, use_ssl):
+def perform_nikto_check(target):
     print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target]
