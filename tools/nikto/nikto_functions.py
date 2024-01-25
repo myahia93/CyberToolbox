@@ -44,54 +44,42 @@ def perform_nikto_check(target):
 
     # Run Nikto scan
     try:
-        nikto_output = subprocess.check_output(
-            nikto_command, stderr=subprocess.STDOUT, text=True)
-
-        # Parse Nikto output to extract relevant information
-        nikto_results = parse_nikto_output(nikto_output)
-
-        # Print the formatted results
-        print_nikto_results(nikto_results)
+        result = subprocess.check_output(nikto_command, text=True)
+        parse_nikto_results(result)
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
 
-def parse_nikto_output(nikto_output):
-    # Parse the Nikto output and extract relevant information
-    nikto_results = []
-
-    # Extract lines starting from "+ " which contain vulnerability information
-    vuln_lines = [line.strip()
-                  for line in nikto_output.splitlines() if line.startswith("+ ")]
-
-    # Parse vulnerability lines and populate nikto_results list
-    for vuln_line in vuln_lines:
-        # Remove the leading "+ " and split the line into category and description
-        category, description = vuln_line[2:].split(":", 1)
-        nikto_results.append(
-            {"category": category.strip(), "description": description.strip()})
-
-    return nikto_results
-
-
-def print_nikto_results(scan_results):
-    # Create a PrettyTable
+def parse_nikto_results(result):
+    # Initialize PrettyTable
     table = PrettyTable()
+    table.field_names = ["Vulnerability", "Description"]
 
-    # Define table headers
-    table.field_names = ["Category", "Description"]
+    # Parse Nikto results
+    lines = result.splitlines()
+    in_vulnerabilities_section = False
+    vulnerabilities = []
 
-    # Populate the table with scan results
-    for result in scan_results:
-        table.add_row([result["category"], result["description"]])
+    for line in lines:
+        if line.startswith("+"):
+            in_vulnerabilities_section = True
+            continue
 
-    # Set column alignment
-    table.align["Category"] = "l"
-    table.align["Description"] = "l"
+        if in_vulnerabilities_section:
+            if line.strip() == "":
+                in_vulnerabilities_section = False
+            else:
+                vulnerabilities.append(line.strip())
 
-    # Print the table with color formatting
-    print("\033[1;35mNikto Scan Results:\033[0m")
+    # Add vulnerabilities to PrettyTable
+    for vulnerability in vulnerabilities:
+        parts = vulnerability.split(": ", 1)
+        if len(parts) == 2:
+            table.add_row([parts[0], parts[1]])
+
+    # Print PrettyTable
+    print("\n\033[1;35mNikto Scan Results:\033[0m")
     print(table)
 
 
