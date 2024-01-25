@@ -32,80 +32,80 @@ def check_target_validity():
                 print()
 
 
-# def perform_nikto_check(target):
-#     print("\033[1;35mLoading Nikto...\033[0m")
-#     # Prepare Nikto command
-#     nikto_command = ["nikto", "-h", target]
-
-#     # Check if target starts with "https" and add "-ssl" option accordingly
-#     if target.startswith("https"):
-#         nikto_command.append("-ssl")
-
-#     # Run Nikto scan
-#     try:
-#         subprocess.run(nikto_command, check=True)
-#     except subprocess.CalledProcessError as e:
-#         print(f"An error occurred: {e}")
-
 def perform_nikto_check(target):
-    print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
+    print("\033[1;35mLoading Nikto...\033[0m")
+    # Prepare Nikto command
+    nikto_command = ["nikto", "-h", target]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
-    ssl_option = "-ssl" if target.startswith("https") else ""
+    if target.startswith("https"):
+        nikto_command.append("-ssl")
 
-    # Construct Nikto command as a string
-    nikto_command = f"nikto -host {target} {ssl_option}"
+    # Run Nikto scan
+    try:
+        subprocess.run(nikto_command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
 
-    # Run Nikto command and capture the output
-    nikto_output = subprocess.getoutput(nikto_command)
+# def perform_nikto_check(target):
+#     print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
 
-    # Display Nikto results
-    display_nikto_results(nikto_output)
+#     # Check if target starts with "https" and add "-ssl" option accordingly
+#     ssl_option = "-ssl" if target.startswith("https") else ""
+
+#     # Construct Nikto command as a string
+#     nikto_command = f"nikto -host {target} {ssl_option}"
+
+#     # Run Nikto command and capture the output
+#     nikto_output = subprocess.getoutput(nikto_command)
+
+#     # Display Nikto results
+#     display_nikto_results(nikto_output)
 
 
-def display_nikto_results(nikto_output):
-    # Check if any host was found
-    if "0 host(s) tested" in nikto_output:
-        print("\033[91mNo host found.\033[0m")
-        return
+# def display_nikto_results(nikto_output):
+#     # Check if any host was found
+#     if "0 host(s) tested" in nikto_output:
+#         print("\033[91mNo host found.\033[0m")
+#         return
 
-    # Create a PrettyTable
-    table = PrettyTable()
-    table.field_names = ["Target IP", "Target Hostname",
-                         "Target Port", "Start Time", "Server", "Vulnerabilities"]
+#     # Create a PrettyTable
+#     table = PrettyTable()
+#     table.field_names = ["Target IP", "Target Hostname",
+#                          "Target Port", "Start Time", "Server", "Vulnerabilities"]
 
-    # Parse Nikto output and populate PrettyTable
-    lines = nikto_output.split("\n")
-    host_info = {}
-    for line in lines:
-        if line.startswith("+ Target"):
-            parts = line.split(":")
-            key = parts[1].strip()
-            value = parts[2].strip()
-            host_info[key] = value
-        elif line.startswith("+ Start Time"):
-            host_info["Start Time"] = line.split(":")[1].strip()
-        elif line.startswith("+ ERROR:"):
-            print("\033[91mNikto encountered errors:\033[0m")
-            print(nikto_output)
-            return
-        elif line.startswith("+ Scan terminated"):
-            host_info["End Time"] = line.split(":")[1].strip()
+#     # Parse Nikto output and populate PrettyTable
+#     lines = nikto_output.split("\n")
+#     host_info = {}
+#     for line in lines:
+#         if line.startswith("+ Target"):
+#             parts = line.split(":")
+#             key = parts[1].strip()
+#             value = parts[2].strip()
+#             host_info[key] = value
+#         elif line.startswith("+ Start Time"):
+#             host_info["Start Time"] = line.split(":")[1].strip()
+#         elif line.startswith("+ ERROR:"):
+#             print("\033[91mNikto encountered errors:\033[0m")
+#             print(nikto_output)
+#             return
+#         elif line.startswith("+ Scan terminated"):
+#             host_info["End Time"] = line.split(":")[1].strip()
 
-    # Check if any vulnerabilities were found
-    if len(host_info) == 0:
-        print("\033[91mNo valid results found.\033[0m")
-        return
+#     # Check if any vulnerabilities were found
+#     if len(host_info) == 0:
+#         print("\033[91mNo valid results found.\033[0m")
+#         return
 
-    # Print the PrettyTable
-    table.add_row([host_info.get("Target IP", ""), host_info.get("Target Hostname", ""),
-                   host_info.get("Target Port", ""), host_info.get(
-                       "Start Time", ""),
-                   host_info.get("Server", ""), host_info.get("Vulnerabilities", "")])
+#     # Print the PrettyTable
+#     table.add_row([host_info.get("Target IP", ""), host_info.get("Target Hostname", ""),
+#                    host_info.get("Target Port", ""), host_info.get(
+#                        "Start Time", ""),
+#                    host_info.get("Server", ""), host_info.get("Vulnerabilities", "")])
 
-    # Print the table with colors
-    print("\n\033[95mNikto Scan Results\033[0m")
-    print(table)
+#     # Print the table with colors
+#     print("\n\033[95mNikto Scan Results\033[0m")
+#     print(table)
 
 
 def display_nikto_description():
