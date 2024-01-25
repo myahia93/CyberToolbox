@@ -19,7 +19,7 @@ def nikto_title(print_banner_function):
     print(nikto_banner)
 
 
-def nmap_menu(print_banner_function):
+def nikto_menu(print_banner_function):
     # Variable for controling the banner print
     show_banner = True
 
