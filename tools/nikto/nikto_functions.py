@@ -1,5 +1,5 @@
 import ipaddress
-import subprocess
+import os
 from urllib.parse import urlparse
 from prettytable import PrettyTable
 from termcolor import colored
