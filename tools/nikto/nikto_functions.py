@@ -34,7 +34,6 @@ def check_target_validity():
 def perform_nikto_check(target):
     print(
         "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
-
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target]
 
@@ -42,10 +41,22 @@ def perform_nikto_check(target):
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Run Nikto scan
+    # Run Nikto scan and print output in real-time
     try:
-        result = subprocess.check_output(nikto_command, text=True)
-        parse_nikto_results(result)
+        with subprocess.Popen(nikto_command, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as process:
+            for line in process.stdout:
+                print(line, end='')
+
+        # Once the scan is complete, parse the results
+        process.communicate()
+        result_code = process.returncode
+
+        if result_code == 0:
+            print("\n\033[1;35mNikto Scan Complete. Parsing Results...\033[0m")
+            parse_nikto_results(target)
+        else:
+            print(
+                f"\n\033[91mNikto Scan Failed with Exit Code {result_code}\033[0m")
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
