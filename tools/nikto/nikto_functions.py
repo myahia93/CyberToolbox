@@ -45,10 +45,10 @@ def perform_nikto_check(target):
     # Run Nikto scan
     try:
         nikto_output = subprocess.check_output(
-            nikto_command, stderr=subprocess.STDOUT, text=True)
+            nikto_command, stderr=subprocess.STDOUT, text=True, capture_output=True)
 
         # Parse Nikto output to extract relevant information
-        nikto_results = parse_nikto_output(nikto_output)
+        nikto_results = parse_nikto_output(nikto_output.stdout)
 
         # Print the formatted results
         print_nikto_results(nikto_results)
