@@ -50,11 +50,12 @@ def check_target_validity():
 def perform_nikto_check(target):
     print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
     # Prepare Nikto command
-    nikto_command = ["nikto", "-h", target]
+    nikto_command = ["nikto", "-host", target]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
     if target.startswith("https"):
         nikto_command.append("-ssl")
+
     # Run Nikto command and capture the output
     nikto_output = subprocess.getoutput(nikto_command)
 
