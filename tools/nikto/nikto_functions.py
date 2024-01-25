@@ -33,8 +33,8 @@ def check_target_validity():
 
 
 def perform_nikto_check(url):
-    loading_message = "Running Nikto scan. This may take a few minutes..."
-    print(colored(loading_message, "yellow"))
+    loading_message = "\nRunning Nikto scan. This may take a few minutes..."
+    print(colored(loading_message, "purple"))
 
     # Build Nikto command
     nikto_command = f"nikto -h {url}"
@@ -47,6 +47,12 @@ def perform_nikto_check(url):
 
 
 def display_nikto_results(nikto_output):
+    # Check if Nikto reported any errors
+    if "+ ERROR:" in nikto_output:
+        print(colored("\nNikto encountered errors:", "red"))
+        print(nikto_output)
+        return
+
     # Check if any host was found
     if "0 host(s) tested" in nikto_output:
         print(colored("\nNo host found.", "red"))
@@ -65,7 +71,7 @@ def display_nikto_results(nikto_output):
             port = line.split(":")[1].strip()
         elif line.startswith("+ Server:"):
             server = line.split(":")[1].strip()
-        elif line.startswith("+"):
+        elif line.startswith("+") and not line.startswith("+ ERROR:"):
             vulnerability = line[1:].strip()
             table.add_row([host_ip, port, server, vulnerability])
 
