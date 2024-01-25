@@ -33,6 +33,7 @@ def check_target_validity():
 
 def perform_nikto_check(target):
     print("\n\033[1;35mRunning Nikto scan. This may take a few minutes...\033[0m")
+
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target]
 
@@ -40,61 +41,37 @@ def perform_nikto_check(target):
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Run Nikto scan
+    # Run Nikto scan and capture the output
     try:
-        result = subprocess.run(
-            nikto_command, check=False, capture_output=True, text=True)
-        nikto_output = result.stdout
-        nikto_errors = result.stderr
+        result = subprocess.run(nikto_command, check=True,
+                                capture_output=True, text=True)
+        output_lines = result.stdout.splitlines()
 
-        # Print errors if any
-        if nikto_errors:
-            print("\033[91mErrors occurred during the Nikto scan:\033[0m")
-            print(nikto_errors)
+        # Extract basic information
+        basic_info = [
+            line for line in output_lines if line.startswith("+ Target")]
 
-        # Process Nikto output
-        process_nikto_output(nikto_output)
+        # Extract vulnerability information
+        vuln_lines = [line for line in output_lines if line.startswith("+ ")]
+
+        # Print basic information
+        for line in basic_info:
+            print(line)
+
+        # Print table with vulnerabilities
+        if vuln_lines:
+            print("\n\033[1;35mVulnerabilities:\033[0m")
+            vuln_table = PrettyTable(["ID", "Description", "Impact", "URL"])
+            for line in vuln_lines:
+                _, vuln_id, vuln_desc, vuln_impact, vuln_url = line.split(
+                    "|", 4)
+                vuln_table.add_row(
+                    [vuln_id.strip(), vuln_desc.strip(), vuln_impact.strip(), vuln_url.strip()])
+            print(vuln_table)
 
     except subprocess.CalledProcessError as e:
-        print(f"\033[91mAn error occurred: {e}\033[0m")
-        # Continue processing the Nikto output even if an error occurs
-        process_nikto_output(e.stdout)
-
-
-def process_nikto_output(nikto_output):
-    # Split the Nikto output into sections
-    sections = nikto_output.split("\n\n")
-
-    # Create a PrettyTable instance
-    table = PrettyTable()
-
-    # Define table headers
-    table.field_names = ["ID", "Description", "Impact", "URL"]
-
-    # Iterate through sections and parse relevant information
-    for section in sections:
-        lines = section.split("\n")
-        if lines and lines[0].startswith("ID"):
-            # Parse relevant information from the section
-            info = lines[0].split(" - ")
-            if len(info) == 2:
-                id, description = info
-            else:
-                id, description = info[0], " ".join(info[1:])
-            impact = lines[1][8:] if len(lines) > 1 else ""
-            url = lines[-1][5:] if len(lines) > 2 else ""
-
-            # Add row to the PrettyTable
-            table.add_row([id, description, impact, url])
-
-    # Set column alignments
-    table.align["ID"] = "l"
-    table.align["Description"] = "l"
-    table.align["Impact"] = "l"
-    table.align["URL"] = "l"
-
-    # Print the PrettyTable
-    print(table)
+        # Handle errors without printing them
+        pass
 
 
 def display_nikto_description():
