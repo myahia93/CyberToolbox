@@ -1,5 +1,5 @@
 import os
-from .nikto_functions import display_nikto_description, check_target_validity, perform_nikto_check
+from .nikto_functions import display_nikto_description, check_target_validity, perform_nikto_check, start_http_server
 
 
 def nikto_title(print_banner_function):
@@ -20,6 +20,7 @@ def nikto_title(print_banner_function):
 
 
 def nikto_menu(print_banner_function):
+    start_http_server()
     # Variable for controling the banner print
     show_banner = True
 
@@ -45,6 +46,8 @@ def nikto_menu(print_banner_function):
                 display_nikto_description()
                 show_banner = False
             elif option == 0:
+                # Stop the HTTP server
+                os.system("pkill -f 'python3 -m http.server 8085'")
                 os.system("clear")
                 return  # Return to main menu
             else:

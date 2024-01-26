@@ -1,7 +1,5 @@
 import ipaddress
 import subprocess
-import os
-import requests
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -33,63 +31,28 @@ def check_target_validity():
                 print()
 
 
+def start_http_server():
+    # Start the HTTP server in the background
+    subprocess.Popen(["python3", "-m", "http.server", "8085"], cwd="~/nikto_reports",
+                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def perform_nikto_check(target):
     print(
         "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
 
-    # Generate a unique file name for the report
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    report_filename = f"report-{timestamp}.html"
-
-    # Full path for the report in ~/nikto_reports
-    reports_directory = os.path.expanduser("~/nikto_reports")
-    report_path = os.path.join(reports_directory, report_filename)
-
-    # Prepare Nikto command with output in the reports directory
-    nikto_command = ["nikto", "-h", target, "-o", report_path]
+    # Prepare Nikto command
+    nikto_command = ["nikto", "-h", target]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Check if the Python server is already active in the directory
-    if not is_server_running():
-        # If the server is not active, start it in the background
-        start_server_command = ["python3", "-m", "http.server", "8085"]
-        subprocess.Popen(start_server_command, cwd=reports_directory)
-
+    # Run Nikto scan
     try:
-        # Execute the Nikto scan
         subprocess.run(nikto_command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-
-    # Get dynamically the machine's IP address
-    ip_address = get_ip_address()
-
-    # Display the message with the URL to access the report
-    print(
-        f"\n\n\033[1;35mYou can view the detailed report on http://{ip_address}:8085/{report_filename}\n\033[0m")
-
-
-def is_server_running():
-    # Check if the Python server is listening on the specified port (8085)
-    try:
-        subprocess.run(["nc", "-zv", "localhost", "8085"], check=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return True
-    except subprocess.CalledProcessError:
-        return False
-
-
-def get_ip_address():
-    # Get the public IP address using httpbin
-    try:
-        response = requests.get("https://httpbin.org/ip")
-        ip_address = response.json()["origin"]
-        return ip_address
-    except requests.RequestException:
-        return "127.0.0.1"  # Default IP address if retrieval fails
 
 
 def display_nikto_description():
