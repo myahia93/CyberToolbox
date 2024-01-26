@@ -2,4 +2,6 @@
 pip install prettytables
 pip install requests
 pip install beautifulsoup4
-pip install termcolor
+
+# Create necessary folders
+mkdir -p ~/nikto_reports

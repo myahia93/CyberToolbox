@@ -36,12 +36,14 @@ def check_target_validity():
 def perform_nikto_check(target):
     print(
         "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
+
     # Generate a unique file name for the report
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     report_filename = f"report-{timestamp}.html"
 
     # Full path for the report in ~/nikto_reports
-    report_path = os.path.join("~/nikto_reports", report_filename)
+    reports_directory = os.path.expanduser("~/nikto_reports")
+    report_path = os.path.join(reports_directory, report_filename)
 
     # Prepare Nikto command with output in the reports directory
     nikto_command = ["nikto", "-h", target, "-o", report_path]
@@ -54,7 +56,7 @@ def perform_nikto_check(target):
     if not is_server_running():
         # If the server is not active, start it in the background
         start_server_command = ["python3", "-m", "http.server", "8085"]
-        subprocess.Popen(start_server_command, cwd="~/nikto_reports")
+        subprocess.Popen(start_server_command, cwd=reports_directory)
 
     try:
         # Execute the Nikto scan
