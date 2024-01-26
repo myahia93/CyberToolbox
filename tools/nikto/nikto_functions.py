@@ -1,7 +1,7 @@
 import ipaddress
 import subprocess
 import os
-import socket
+import requests
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -60,16 +60,19 @@ def perform_nikto_check(target):
 
     try:
         # Execute the Nikto scan
-        subprocess.run(nikto_command, check=True)
+        subprocess.run(nikto_command, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, check=True)
+        # If the command runs successfully, stdout and stderr will not be printed
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+        # Print the error message only if the command fails
+        print(f"An error occurred: {e.stderr.decode()}")
 
-    # Get dynamically the machine's IP address
-    ip_address = get_ip_address()
+    # Get the public IP address dynamically
+    ip_address = get_public_ip_address()
 
     # Display the message with the URL to access the report
     print(
-        f"\nYou can view the detailed report on http://{ip_address}:8085/{report_filename}")
+        f"\n\n\033[1;35mYou can view the detailed report on http://{ip_address}:8085/{report_filename}\n\033[0m")
 
 
 def is_server_running():
@@ -82,13 +85,13 @@ def is_server_running():
         return False
 
 
-def get_ip_address():
-    # Get dynamically the machine's IP address
+def get_public_ip_address():
+    # Get the public IP address using httpbin
     try:
-        # Use a socket to get the local IP address
-        ip_address = socket.gethostbyname(socket.gethostname())
+        response = requests.get("https://httpbin.org/ip")
+        ip_address = response.json()["origin"]
         return ip_address
-    except socket.gaierror:
+    except requests.RequestException:
         return "127.0.0.1"  # Default IP address if retrieval fails
 
 
