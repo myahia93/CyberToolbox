@@ -2,6 +2,8 @@ import ipaddress
 import subprocess
 import os
 import socket
+import fcntl
+import struct
 import datetime
 from urllib.parse import urlparse
 
@@ -61,11 +63,6 @@ def perform_nikto_check(target):
     process = subprocess.Popen(
         nikto_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    # Print the message with the URL to view the report
-    ip_address = get_eth0_ip_address()
-    print(
-        f"\nView the detailed report on http://{ip_address}:8085/{report_name}.html")
-
     # Print the output in real-time
     while True:
         output_line = process.stdout.readline()
@@ -74,14 +71,29 @@ def perform_nikto_check(target):
         if output_line:
             print(output_line.strip())
 
+    # Print the message with the URL to view the report
+    ip_address = get_eth0_ip_address()
+    print(
+        f"\n\033[1;35mView the detailed report on http://{ip_address}:8085/{report_name}.html\n\033[0m")
+
 
 def get_eth0_ip_address():
-    # Get the IP address of the eth0 interface
-    try:
-        ip_address = socket.gethostbyname(socket.gethostname())
-        return ip_address
-    except socket.gaierror:
-        return "unknown"
+    # Create a socket to retrieve the IP address
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Use ioctl to get information about the eth0 interface
+    # SIOCGIFADDR is used to retrieve the IP address
+    interface_name = b'eth0'
+    ip_address = fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', interface_name[:15])
+    )[20:24]
+
+    # Convert the IP address to human-readable format
+    ip_address = socket.inet_ntoa(ip_address)
+
+    return ip_address
 
 
 def display_nikto_description():
