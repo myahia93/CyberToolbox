@@ -2,7 +2,6 @@ import ipaddress
 import subprocess
 import os
 import requests
-import socket
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -57,20 +56,16 @@ def perform_nikto_check(target):
     if not is_server_running():
         # If the server is not active, start it in the background
         start_server_command = ["python3", "-m", "http.server", "8085"]
-        subprocess.Popen(start_server_command, cwd=reports_directory,
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(start_server_command, cwd=reports_directory)
 
     try:
         # Execute the Nikto scan
-        subprocess.run(nikto_command, stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE, check=True)
-        # If the command runs successfully, stdout and stderr will not be printed
+        subprocess.run(nikto_command, check=True)
     except subprocess.CalledProcessError as e:
-        # Print the error message only if the command fails
-        print(f"An error occurred: {e.stderr.decode()}")
+        print(f"An error occurred: {e}")
 
-    # Get the public IP address dynamically
-    ip_address = get_public_ip_address()
+    # Get dynamically the machine's IP address
+    ip_address = get_ip_address()
 
     # Display the message with the URL to access the report
     print(
@@ -87,7 +82,7 @@ def is_server_running():
         return False
 
 
-def get_public_ip_address():
+def get_ip_address():
     # Get the public IP address using httpbin
     try:
         response = requests.get("https://httpbin.org/ip")
