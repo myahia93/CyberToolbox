@@ -1,5 +1,6 @@
 import ipaddress
 import subprocess
+import os
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -32,8 +33,11 @@ def check_target_validity():
 
 
 def start_http_server():
+    # Get the absolute path to the home directory
+    home_directory = os.path.expanduser("~")
+
     # Start the HTTP server in the background
-    subprocess.Popen(["python3", "-m", "http.server", "8085"], cwd="~/nikto_reports",
+    subprocess.Popen(["python3", "-m", "http.server", "8085"], cwd=os.path.join(home_directory, "nikto_reports"),
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
