@@ -1,8 +1,9 @@
 import ipaddress
 import subprocess
 import os
-from urllib.parse import urlparse
+import socket
 from datetime import datetime
+from urllib.parse import urlparse
 
 
 def check_target_validity():
@@ -45,8 +46,12 @@ def perform_nikto_check(target):
     print(
         "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
 
+    # Generate a unique report name based on date and time
+    report_name = f"report-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+
     # Prepare Nikto command
-    nikto_command = ["nikto", "-h", target]
+    nikto_command = ["nikto", "-h", target, "-o", os.path.join(
+        os.path.expanduser("~"), "nikto_reports", report_name + ".html")]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
     if target.startswith("https"):
@@ -54,9 +59,23 @@ def perform_nikto_check(target):
 
     # Run Nikto scan
     try:
-        subprocess.run(nikto_command, check=True)
+        subprocess.run(nikto_command, check=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Print the message with the URL to view the report
+        ip_address = get_eth0_ip_address()
+        print(
+            f"\n\n\033[1;35mView the detailed report on http://{ip_address}:8085/{report_name}.html\n\033[0m")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
+
+
+def get_eth0_ip_address():
+    # Get the IP address of the eth0 interface
+    try:
+        ip_address = socket.gethostbyname(socket.gethostname())
+        return ip_address
+    except socket.gaierror:
+        return "unknown"
 
 
 def display_nikto_description():
