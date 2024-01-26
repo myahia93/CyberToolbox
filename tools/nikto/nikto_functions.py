@@ -1,7 +1,9 @@
 import ipaddress
 import subprocess
+import os
+import socket
 from urllib.parse import urlparse
-from prettytable import PrettyTable
+from datetime import datetime
 
 
 def check_target_validity():
@@ -34,64 +36,58 @@ def check_target_validity():
 def perform_nikto_check(target):
     print(
         "\n\033[1;35mRunning Nikto scan. This may take a few minutes...\n\033[0m")
-    # Prepare Nikto command
-    nikto_command = ["nikto", "-h", target]
+    # Generate a unique file name for the report
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    report_filename = f"report-{timestamp}.html"
+
+    # Full path for the report in ~/nikto_reports
+    report_path = os.path.join("~/nikto_reports", report_filename)
+
+    # Prepare Nikto command with output in the reports directory
+    nikto_command = ["nikto", "-h", target, "-o", report_path]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Run Nikto scan and print output in real-time
+    # Check if the Python server is already active in the directory
+    if not is_server_running():
+        # If the server is not active, start it in the background
+        start_server_command = ["python3", "-m", "http.server", "8085"]
+        subprocess.Popen(start_server_command, cwd="~/nikto_reports")
+
     try:
-        with subprocess.Popen(nikto_command, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as process:
-            for line in process.stdout:
-                print(line, end='')
-
-        # Once the scan is complete, parse the results
-        process.communicate()
-        result_code = process.returncode
-
-        if result_code == 0:
-            print("\n\033[1;35mNikto Scan Complete. Parsing Results...\033[0m")
-            parse_nikto_results(target)
-        else:
-            print(
-                f"\n\033[91mNikto Scan Failed with Exit Code {result_code}\033[0m")
-
+        # Execute the Nikto scan
+        subprocess.run(nikto_command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
+    # Get dynamically the machine's IP address
+    ip_address = get_ip_address()
 
-def parse_nikto_results(result):
-    # Initialize PrettyTable
-    table = PrettyTable()
-    table.field_names = ["Vulnerability", "Description"]
+    # Display the message with the URL to access the report
+    print(
+        f"\nYou can view the detailed report on http://{ip_address}:8085/{report_filename}")
 
-    # Parse Nikto results
-    lines = result.splitlines()
-    in_vulnerabilities_section = False
-    vulnerabilities = []
 
-    for line in lines:
-        if line.startswith("+"):
-            in_vulnerabilities_section = True
-            continue
+def is_server_running():
+    # Check if the Python server is listening on the specified port (8085)
+    try:
+        subprocess.run(["nc", "-zv", "localhost", "8085"], check=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
-        if in_vulnerabilities_section:
-            if line.strip() == "":
-                in_vulnerabilities_section = False
-            else:
-                vulnerabilities.append(line.strip())
 
-    # Add vulnerabilities to PrettyTable
-    for vulnerability in vulnerabilities:
-        parts = vulnerability.split(": ", 1)
-        if len(parts) == 2:
-            table.add_row([parts[0], parts[1]])
-
-    # Print PrettyTable
-    print("\n\033[1;35mNikto Scan Results:\033[0m")
-    print(table)
+def get_ip_address():
+    # Get dynamically the machine's IP address
+    try:
+        # Use a socket to get the local IP address
+        ip_address = socket.gethostbyname(socket.gethostname())
+        return ip_address
+    except socket.gaierror:
+        return "127.0.0.1"  # Default IP address if retrieval fails
 
 
 def display_nikto_description():
