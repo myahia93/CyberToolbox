@@ -57,16 +57,22 @@ def perform_nikto_check(target):
     if target.startswith("https"):
         nikto_command.append("-ssl")
 
-    # Run Nikto scan
-    try:
-        subprocess.run(nikto_command, check=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # Print the message with the URL to view the report
-        ip_address = get_eth0_ip_address()
-        print(
-            f"\n\n\033[1;35mView the detailed report on http://{ip_address}:8085/{report_name}.html\n\033[0m")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+    # Run Nikto scan and capture output in real-time
+    process = subprocess.Popen(
+        nikto_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+    # Print the message with the URL to view the report
+    ip_address = get_eth0_ip_address()
+    print(
+        f"\nView the detailed report on http://{ip_address}:8085/{report_name}.html")
+
+    # Print the output in real-time
+    while True:
+        output_line = process.stdout.readline()
+        if output_line == '' and process.poll() is not None:
+            break
+        if output_line:
+            print(output_line.strip())
 
 
 def get_eth0_ip_address():
