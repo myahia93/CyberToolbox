@@ -2,6 +2,7 @@ import ipaddress
 import subprocess
 import os
 import requests
+import socket
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -56,7 +57,8 @@ def perform_nikto_check(target):
     if not is_server_running():
         # If the server is not active, start it in the background
         start_server_command = ["python3", "-m", "http.server", "8085"]
-        subprocess.Popen(start_server_command, cwd=reports_directory)
+        subprocess.Popen(start_server_command, cwd=reports_directory,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     try:
         # Execute the Nikto scan
