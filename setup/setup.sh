@@ -27,6 +27,6 @@ chmod +x main.py
 
 # Create a symbolic link for the cybertoolbox command
 echo "Setting up 'cybertoolbox' command..."
-ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
+sudo ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
 
 echo "Installation completed. You can now run the application using the 'cybertoolbox' command."
