@@ -25,20 +25,24 @@ cd "$REPO_PATH"
 echo "Installing Python dependencies..."
 pip install -q prettytables requests beautifulsoup4
 
-# Create necessary directories (if any)
-echo "Creating necessary directories..."
-# Create the nikto_reports directory in the user's home directory
-NIKTO_REPORTS_DIR="$(eval echo ~$SUDO_USER)/nikto_reports"
-
-if [ ! -d "$NIKTO_REPORTS_DIR" ]; then
-    mkdir -p "$NIKTO_REPORTS_DIR"
-fi
-
 # Make main.py executable
 chmod a+x main.py
 
 # Create a symbolic link for the cybertoolbox command
 echo "Setting up 'cybertoolbox' command..."
 ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
+
+# Create necessary directories (if any)
+echo "Creating necessary directories..."
+# Determine the real user's home directory
+USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
+# Create the nikto_reports directory in the real user's home directory
+NIKTO_REPORTS_DIR="$USER_HOME/nikto_reports"
+
+if [ ! -d "$NIKTO_REPORTS_DIR" ]; then
+    mkdir -p "$NIKTO_REPORTS_DIR"
+    # Ensure the real user owns the nikto_reports directory
+    chown $SUDO_USER:$SUDO_USER "$NIKTO_REPORTS_DIR"
+fi
 
 echo -e "\e[32mInstallation completed. You can now run the application using the \e[31mcybertoolbox\e[32m command.\e[0m"
