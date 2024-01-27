@@ -3,18 +3,10 @@
 # Path where the repository will be cloned
 REPO_PATH="$HOME/CyberToolbox"
 
-# Check if the directory already exists
+# Automatically remove the directory if it exists
 if [ -d "$REPO_PATH" ]; then
-    echo "The directory $REPO_PATH already exists."
-    read -p "Do you want to remove it and continue with the installation? (y/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "Removing existing directory and continuing with installation."
-        rm -rf "$REPO_PATH"
-    else
-        echo "Installation cancelled."
-        exit 1
-    fi
+    echo "Removing existing directory at $REPO_PATH."
+    rm -rf "$REPO_PATH"
 fi
 
 # Create the directory and clone the repository
@@ -35,6 +27,6 @@ chmod +x main.py
 
 # Create a symbolic link for the cybertoolbox command
 echo "Setting up 'cybertoolbox' command..."
-sudo ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
+ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
 
 echo "Installation completed. You can now run the application using the 'cybertoolbox' command."
