@@ -1,6 +1,7 @@
 import os
 from .hydra_functions import attack_submenu, display_hydra_description
 
+
 def hydra_title(print_banner_function):
     hydra_banner = """
     \033[0;32m
@@ -18,8 +19,10 @@ def hydra_title(print_banner_function):
     """
     print(hydra_banner)
 
+
 def hydra_menu(print_banner_function):
-    show_banner = True  # Initialisation de la variable pour contrôler l'affichage de la bannière
+    # Initialisation de la variable pour contrôler l'affichage de la bannière
+    show_banner = True
 
     while True:
         if show_banner:
@@ -34,10 +37,11 @@ def hydra_menu(print_banner_function):
         try:
             option = int(input("\n\033[92mEnter your option: \033[0m"))
             if option == 1:
-               attack_submenu()
+                attack_submenu()
             elif option == 2:
                 display_hydra_description()
-                show_banner = False  # Empêche l'affichage de la bannière après avoir montré la description
+                # Prevents the banner from being displayed after the description has been shown
+                show_banner = False
             elif option == 0:
                 os.system("clear")
                 return  # Return to main menu
@@ -46,5 +50,6 @@ def hydra_menu(print_banner_function):
                 print("\033[91mInvalid option. Please enter 0, 1, or 2.\033[0m")
         except ValueError:
             os.system("clear")
-            print("\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
+            print(
+                "\033[91mInvalid input. Please enter a valid number.\033[0m", end='')
             print()
