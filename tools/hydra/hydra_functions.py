@@ -64,7 +64,7 @@ def parse_hydra_output(output):
     table = PrettyTable()
     table.field_names = ["Service", "Host", "Login", "Password"]
 
-    # Mise à jour de l'expression régulière pour inclure SSH, FTP et Web
+    # Regular expression updated to include SSH, FTP and Web
     found_passwords_ssh = re.findall(
         r'\[\d+\]\[ssh\] host: ([^ ]+) +login: ([^ ]+) +password: ([^\s]+)', output)
     found_passwords_ftp = re.findall(
@@ -72,7 +72,7 @@ def parse_hydra_output(output):
     found_passwords_web = re.findall(
         r'\[\d+\]\[(http-[^\]]+)\] host: ([^ ]+) +login: ([^ ]+) +password: ([^\s]+)', output)
 
-    # Ajout de la vérification des tentatives infructueuses pour le web
+    # Unsuccessful attempts check added for the web
     unsuccessful_attempts_web = re.findall(
         r'\[\d+\]\[(http-[^\]]+)\] host: ([^ ]+) +login: ([^ ]+) +password: .+login incorrect', output)
 
@@ -93,7 +93,7 @@ def parse_hydra_output(output):
                       f"\033[91m{login}\033[0m", "\033[91mFailed\033[0m"])
 
     if len(table._rows) > 0:
-        print(table)  # Affiche le tableau
+        print(table)  # Display the table
     else:
         print("\033[91m\nNo valid passwords found.\033[0m")
 
@@ -110,12 +110,12 @@ def attack_submenu():
             choice = input("\nEntrez votre choix : ")
 
             # Inside attack_submenu function
- # Dans la fonction attack_submenu, assurez-vous d'ajouter l'argument extra_params
+            # In the attack_submenu function, make sure you add the extra_params argument
             if choice in ['1', '2']:
                 service = "ftp" if choice == '1' else "ssh"
                 target = input(
                     f"Entrez l'IP/hostname pour {service.upper()} : ")
-                # Ajoutez extra_params avec une valeur par défaut vide
+                # Add extra_params with an empty default value
                 display_hydra_command_progress(
                     service, target, "", "", False, False, "")
 
@@ -142,7 +142,7 @@ def attack_submenu():
                 target = input("Entrez l'URL ou l'IP cible : ")
                 attack_type = input(
                     "Entrez le type de service à attaquer (par exemple, http-post-form, http-get-form) : ")
-                # Ajoutez extra_params avec une valeur par défaut vide
+                # Add extra_params with an empty default value
                 display_hydra_command_progress(
                     target, attack_type, "", "", False, False, "")
 
@@ -162,20 +162,20 @@ def attack_submenu():
                 display_hydra_command_progress(
                     target, attack_type, user_input, pass_input, is_user_file, is_pass_file, "")
 
-                # Texte en violet
+                # Text in purple
                 print(
                     "\033[95mAide: Les paramètres supplémentaires permettent de spécifier les détails du formulaire web.\033[0m")
                 print(
                     "\033[95mPar exemple, pour un formulaire avec un champ d'identifiant 'id' et un champ de mot de passe 'mdp',\033[0m")
                 print(
                     "\033[95met un message d'erreur 'Identifiant ou mot de passe incorrect', vous entreriez :\033[0m")
-                # Exemple en cyan)
+                # Exemple in cyan)
                 print(
                     '\033[96m"/login.php:id=^USER^&mdp=^PASS^:Identifiant ou mot de passe incorrect!"\033[0m')
 
                 extra_params = input(
                     "\nEntrez les paramètres supplémentaires (ou laissez vide) : ")
-                # Affichez la progression finale ici avec extra_params
+                # Display the final progress here with extra_params
                 display_hydra_command_progress(
                     target, attack_type, user_input, pass_input, is_user_file, is_pass_file, extra_params)
 
