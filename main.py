@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 from tools.nmap.nmap_menu import nmap_menu
