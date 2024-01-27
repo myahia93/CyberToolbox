@@ -27,7 +27,12 @@ pip install -q prettytables requests beautifulsoup4
 
 # Create necessary directories (if any)
 echo "Creating necessary directories..."
-mkdir -p ~/nikto_reports
+# Create the nikto_reports directory in the user's home directory
+NIKTO_REPORTS_DIR="$(eval echo ~$SUDO_USER)/nikto_reports"
+
+if [ ! -d "$NIKTO_REPORTS_DIR" ]; then
+    mkdir -p "$NIKTO_REPORTS_DIR"
+fi
 
 # Make main.py executable
 chmod a+x main.py
