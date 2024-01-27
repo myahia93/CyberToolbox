@@ -24,7 +24,7 @@ cd "$REPO_PATH"
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
-pip install -q --upgrade prettytables requests beautifulsoup4
+pip install -q prettytables requests beautifulsoup4
 
 # Create necessary directories (if any)
 echo "Creating necessary directories..."
