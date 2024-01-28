@@ -177,11 +177,9 @@ def sqlmap_dump(url, database):
     choice = input(
         "\nEnter the number of the table you want to dump or choose to dump all: ")
     try:
-        choice = int(choice)
-        if choice == len(tables) + 1:
-            selected_tables = tables
-        else:
-            selected_tables = [tables[choice - 1]]
+        choice = prompt_for_table_choice(tables)
+        selected_tables = tables if choice == len(
+            tables) + 1 else [tables[choice - 1]]
     except (ValueError, IndexError):
         print("\033[91mInvalid selection.\033[0m")
         return
@@ -196,6 +194,21 @@ def sqlmap_dump(url, database):
         tables_data[table] = dump_table_data(url, database, table, columns)
 
     print_results(tables_data)
+
+
+def prompt_for_table_choice(tables):
+    while True:
+        print("\n\033[93mAvailable tables:\033[0m")
+        for idx, table in enumerate(tables, start=1):
+            print(f"{idx}. {table}")
+        print(f"{len(tables) + 1}. Dump all tables")
+
+        choice = input(
+            "\nEnter the number of the table you want to dump or choose to dump all: ")
+        if choice.isdigit() and 1 <= int(choice) <= len(tables) + 1:
+            return int(choice)
+        else:
+            print("\033[91mPlease enter a valid number.\033[0m")
 
 
 def execute_sqlmap_command(command):
@@ -242,15 +255,14 @@ def print_results(tables_data):
     for table, data in tables_data.items():
         print(f"\n\033[1;34m-- {table} --\033[0m")
         pt = PrettyTable()
-        # Find the longest column name for alignment
-        longest_col_name = max((col for col, _ in data), key=len)
         pt.field_names = ["Column Name", "Data"]
-        last_column_name = ""
-        for column, rows in data:
-            if column != last_column_name:
-                pt.add_row([f"\033[1;33m{column}\033[0m",
-                           "\033[1;33mData\033[0m"])
-                last_column_name = column
+
+        # Delete useless lines
+        filtered_data = [(col, dat)
+                         for col, dat in data if dat and dat != "Data"]
+
+        for column, rows in filtered_data:
+            pt.add_row([f"\033[1;33m{column}\033[0m", "\033[1;33mData\033[0m"])
             for row in rows:
                 if row != "Column":  # Skip the redundant "Column" rows
                     pt.add_row(
