@@ -168,21 +168,12 @@ def sqlmap_dump(url, database):
         print("\033[91mNo tables found or unable to retrieve tables.\033[0m")
         return
 
-    # Ask user to choose tables to dump
-    print("\n\033[93mAvailable tables:\033[0m")
-    for idx, table in enumerate(tables, start=1):
-        print(f"{idx}. {table}")
-    print(f"{len(tables) + 1}. Dump all tables")
-
-    choice = input(
-        "\nEnter the number of the table you want to dump or choose to dump all: ")
-    try:
-        choice = prompt_for_table_choice(tables)
-        selected_tables = tables if choice == len(
-            tables) + 1 else [tables[choice - 1]]
-    except (ValueError, IndexError):
-        print("\033[91mInvalid selection.\033[0m")
-        return
+    choice = prompt_for_table_choice(tables)
+    if choice == len(tables) + 1:
+        selected_tables = tables
+    else:
+        selected_tables = [tables[choice - 1]]
+    print()
 
     tables_data = {}
     for table in selected_tables:
@@ -198,17 +189,18 @@ def sqlmap_dump(url, database):
 
 def prompt_for_table_choice(tables):
     while True:
-        print("\n\033[93mAvailable tables:\033[0m")
+        print("\n\033[1;34mAvailable tables:\033[0m")
         for idx, table in enumerate(tables, start=1):
             print(f"{idx}. {table}")
         print(f"{len(tables) + 1}. Dump all tables")
 
         choice = input(
-            "\nEnter the number of the table you want to dump or choose to dump all: ")
-        if choice.isdigit() and 1 <= int(choice) <= len(tables) + 1:
-            return int(choice)
-        else:
-            print("\033[91mPlease enter a valid number.\033[0m")
+            "\n\033[1;34mEnter the number of the table you want to dump or choose to dump all:\033[0m ")
+        if choice.isdigit():
+            choice = int(choice)
+            if 1 <= choice <= len(tables) + 1:
+                return choice
+        print("\033[91mPlease enter a valid number.\033[0m")
 
 
 def execute_sqlmap_command(command):
