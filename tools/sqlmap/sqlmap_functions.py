@@ -174,23 +174,21 @@ def sqlmap_dump(url, database):
         print(f"{idx}. {table}")
     print(f"{len(tables) + 1}. Dump all tables")
 
-    while True:
-        choice = input(
-            "\n\033[93mEnter the number of the table you want to dump or choose to dump all:\033[0m ")
-        try:
-            choice = int(choice)
-            if choice == len(tables) + 1:
-                selected_tables = tables
-            else:
-                selected_tables = [tables[choice - 1]]
-        except (ValueError, IndexError):
-            print(
-                "\033[91mInvalid selection. Please enter a valid number.\033[0m", end='')
-            print()
+    choice = input(
+        "\nEnter the number of the table you want to dump or choose to dump all: ")
+    try:
+        choice = int(choice)
+        if choice == len(tables) + 1:
+            selected_tables = tables
+        else:
+            selected_tables = [tables[choice - 1]]
+    except (ValueError, IndexError):
+        print("\033[91mInvalid selection.\033[0m")
+        return
 
     tables_data = {}
     for table in selected_tables:
-        print(f"\n\033[92mDumping table: {table}\033[0m")
+        print(f"\033[92mDumping table: {table}\033[0m")
         columns = get_table_columns(url, database, table)
         if not columns:
             print(f"\033[91mNo columns found for table {table}.\033[0m")
