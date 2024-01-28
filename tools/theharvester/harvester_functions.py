@@ -17,7 +17,7 @@ def display_theharvester_description():
     - Uses multiple data sources, including search engines, and Shodan.
     - Simple and flexible to use for reconnaissance and information gathering.
 
-    In \033[96mCyberToolbox\033[0;32m, theHarvester is integrated to facilitate the information gathering phase in 
+    In \033[0;31mCyberToolbox\033[0;32m, theHarvester is integrated to facilitate the information gathering phase in 
     cybersecurity assessments, allowing for efficient data collection about a target organization or network.\033[0m
     """
     print(description)
