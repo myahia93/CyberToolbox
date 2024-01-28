@@ -34,6 +34,7 @@ ln -sf "$(pwd)/main.py" /usr/local/bin/cybertoolbox
 
 # Create necessary directories (if any)
 echo "Creating necessary directories..."
+mkdir -p ~/nikto_reports # For root user
 # Determine the real user's home directory
 USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
 # Create the nikto_reports directory in the real user's home directory
