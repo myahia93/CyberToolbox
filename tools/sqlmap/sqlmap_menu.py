@@ -43,7 +43,7 @@ def sqlmap_menu(print_banner_function):
                 else:
                     print(
                         "\n\033[91mInvalid URL. Please enter a valid URL.\033[0m")
-            elif option == 3:
+            elif option == 2:
                 url = check_url_validity()
                 if url:
                     database = input(
@@ -52,7 +52,7 @@ def sqlmap_menu(print_banner_function):
                 else:
                     print(
                         "\n\033[91mInvalid URL. Please enter a valid URL.\033[0m")
-            elif option == 2:
+            elif option == 3:
                 display_sqlmap_description()
                 show_banner = False
             elif option == 0:
