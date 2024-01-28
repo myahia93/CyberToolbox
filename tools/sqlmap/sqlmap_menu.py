@@ -1,5 +1,5 @@
 import os
-from .sqlmap_functions import display_sqlmap_description, check_url_validity, perform_sqlmap_check
+from .sqlmap_functions import display_sqlmap_description, check_url_validity, perform_sqlmap_check, sqlmap_dump
 
 
 def sqlmap_title(print_banner_function):
@@ -30,7 +30,8 @@ def sqlmap_menu(print_banner_function):
         else:
             show_banner = True
         print("\n[\033[92m1\033[0m]> \033[96mDatabase Vulnerability Check\033[0m")
-        print("[\033[92m2\033[0m]> \033[96mSQLmap Description\033[0m")
+        print("[\033[92m2\033[0m]> \033[96mDump Vulnerable Database\033[0m")
+        print("[\033[92m3\033[0m]> \033[96mSQLmap Description\033[0m")
         print("[\033[92m0\033[0m]> \033[96mReturn to main menu\033[0m")
 
         try:
@@ -39,6 +40,15 @@ def sqlmap_menu(print_banner_function):
                 url = check_url_validity()
                 if url:
                     perform_sqlmap_check(url)
+                else:
+                    print(
+                        "\n\033[91mInvalid URL. Please enter a valid URL.\033[0m")
+            elif option == 3:
+                url = check_url_validity()
+                if url:
+                    database = input(
+                        "\n\033[92mEnter the database name: \033[0m")
+                    sqlmap_dump(url, database)
                 else:
                     print(
                         "\n\033[91mInvalid URL. Please enter a valid URL.\033[0m")

