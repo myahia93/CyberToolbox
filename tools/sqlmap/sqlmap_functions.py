@@ -240,31 +240,26 @@ def get_table_columns(url, database, table):
 
 
 def dump_table_data(url, database, table, columns):
-    all_data = []
+    all_data = {}
     for column in columns:
         command = ["sqlmap", "-u", url, "-D", database,
                    "-T", table, "-C", column, "--dump", "--batch"]
         output = execute_sqlmap_command(command)
-        # Data extract
+        # Data Extract
         data = re.findall(r'\|\s+(\w+)\s+\|', output)
-        all_data.append((column, data))
+        if data:
+            filtered_data = [d for d in data if d not in ("Column", "Data")]
+            if filtered_data:
+                all_data[column] = filtered_data
     return all_data
 
 
 def print_results(tables_data):
-    for table, data in tables_data.items():
-        print(f"\n\033[1;34m-- {table} --\033[0m")
-        pt = PrettyTable()
-        pt.field_names = ["Column Name", "Data"]
-
-        # Delete useless lines
-        filtered_data = [(col, dat)
-                         for col, dat in data if dat and dat != "Data"]
-
-        for column, rows in filtered_data:
-            pt.add_row([f"\033[1;33m{column}\033[0m", "\033[1;33mData\033[0m"])
-            for row in rows:
-                if row != "Column":  # Skip the redundant "Column" rows
-                    pt.add_row(
-                        [f"\033[0;32m{column}\033[0m", f"\033[0;37m{row}\033[0m"])
-        print(pt)
+    for table, columns_data in tables_data.items():
+        for column, data in columns_data.items():
+            print(f"\n\033[1;34m-- {table}.{column} --\033[0m")
+            pt = PrettyTable()
+            pt.field_names = ["Data"]
+            for entry in data:
+                pt.add_row([entry])
+            print(pt)
