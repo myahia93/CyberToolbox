@@ -123,7 +123,7 @@ def parse_dig_output(output):
     return table
 
 def execute_dig(target):
-    command = f"dig {target} ANY +noall +answer"
+    command = f"dig @8.8.8.8 {target} ANY +noall +answer"
     try:
         # Running the dig command and capturing the output
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
