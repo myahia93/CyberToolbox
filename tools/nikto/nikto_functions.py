@@ -53,7 +53,7 @@ def perform_nikto_check(target):
 
     # Prepare Nikto command
     nikto_command = ["nikto", "-h", target, "-o", os.path.join(
-        os.path.expanduser("~"), "nikto_reports", report_name + ".html")]
+        os.path.expanduser("~"), "nikto_reports", report_name + ".html"), "</dev/null"]
 
     # Check if target starts with "https" and add "-ssl" option accordingly
     if target.startswith("https"):
